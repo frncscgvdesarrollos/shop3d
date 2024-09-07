@@ -75,7 +75,7 @@ export default function Header() {
         <div className="absolute top-0 right-0 bg-teal-200 text-teal-900 p-6 rounded-lg shadow-lg shadow-gray-600 z-10 w-full lg:w-auto">
           <div className="flex flex-col lg:flex-row items-center justify-between mb-4">
             <h6 className="text-xl font-semibold py-4 px-4">Mis datos</h6>
-            <button className="bg-teal-500  font-semibold py-2 px-4 rounded">Editar &#9986;</button>
+            <button className="bg-teal-500  font-semibold py-2 px-4 rounded">Editar {`&#9986;`}</button>
             <button className="bg-teal-500   font-semibold py-2 px-4 rounded ml-4 h-full" onClick={() => setMisDatos(false)}>X</button>
           </div>
           <div className="flex flex-col items-center justify-between gap-2 text-sm">

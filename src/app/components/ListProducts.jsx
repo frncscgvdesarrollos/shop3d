@@ -70,7 +70,8 @@ export default function ListProducts() {
     return (
         <div className="w-full">
             <h5 className="text-3xl font-extrabold text-left text-teal-600">
-                Lista de Productos 📦
+                Lista de Productos 
+                {/* 📦 */}
             </h5>
             <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-1 mt-4">
                 {productosParaMostrar.map(producto => (
