@@ -132,6 +132,10 @@ export default function Success() {
     }
   };
 
+  function redirectshop(){
+    return window.location.href = '/shop'
+  }
+
   return (
     <div className="imagenfondo2 flex flex-col items-center justify-center min-h-screen p-6">
       <div className="bg-white shadow-lg rounded-lg p-8 text-center max-w-md">
@@ -169,7 +173,7 @@ export default function Success() {
 
         <button 
           className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out"
-          onClick={() => window.location.href = '/shop'}
+          onClick={redirectshop} 
         >
           Volver a la tienda
         </button>
