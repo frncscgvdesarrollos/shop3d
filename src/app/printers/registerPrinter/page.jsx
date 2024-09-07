@@ -1,7 +1,7 @@
 'use client'
 import { UserAuth } from '../../context/AuthContext';
 import { useState, useEffect } from 'react';
-import { createPrinter } from '../../firebase'; // Asegúrate de implementar esta función en tu archivo de Firebase
+// import { createPrinter } from '../../firebase'; // Asegúrate de implementar esta función en tu archivo de Firebase
 
 export default function RegisterPrinter() {
     const { user } = UserAuth();
@@ -41,14 +41,14 @@ export default function RegisterPrinter() {
     
     function handleSubmit(e) {
         e.preventDefault(); // Prevent the default form submission
-        createPrinter(printerInfo)
-            .then(res => {
-                console.log('Printer registered with ID:', res);
-                window.location.href = '/shop'; // Redirige a otra página si es necesario
-            })
-            .catch(err => {
-                console.error('Error registering printer:', err);
-            });
+        // createPrinter(printerInfo)
+        //     .then(res => {
+        //         console.log('Printer registered with ID:', res);
+        //         window.location.href = '/shop'; // Redirige a otra página si es necesario
+        //     })
+        //     .catch(err => {
+        //         console.error('Error registering printer:', err);
+        //     });
     }
 
     return (
