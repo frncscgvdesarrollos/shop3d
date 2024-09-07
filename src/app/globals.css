@@ -1,0 +1,260 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+.imagenfondo {
+  background-image: url(../../public/main.png) !important;
+  background-repeat: no-repeat;
+  background-size: auto; /* Mantiene el tamaño original de la imagen */
+  background-position-x: -8vw;
+}
+
+.imagenfondo2 {
+  background-image: url(../../public/main.png) !important;
+  background-repeat: no-repeat;
+  background-size: auto; /* Mantiene el tamaño original de la imagen */
+  background-position-x: 35vw;
+  background-position-y: 32vw;
+}
+.imagenfondoprinters{
+  background-image: url(../../public/printers2.png) !important;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.clienteFeliz{
+  background-image: url(../../public/clienteFeliz.png) !important;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: 20%;
+}
+.quienesSomos{
+  background-image: url(../../public/quienesSomos.png) !important;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: 75%;
+}
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+  .imagenfondo {
+    background-size: auto; /* Mantiene el tamaño original en móviles */
+    background-position-x: -45vw;
+  }
+
+  .imagenfondo2 {
+    background-repeat: repeat-y;
+  }
+}
+
+/* Carrusel Wrapper */
+.carousel-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para el carrusel */
+}
+
+/* Carrusel */
+.carousel {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Slide */
+.carousel-slide {
+  min-width: 100%;
+  box-sizing: border-box;
+  padding: 20px; /* Espaciado interno */
+}
+
+/* Slide Content */
+.carousel-slide-content {
+  background: white;
+  border: 1px solid #ddd; /* Borde sutil */
+  border-radius: 8px; /* Bordes redondeados para el contenido */
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Sombra para el contenido */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.carousel-slide-content:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Efecto de sombra al pasar el cursor */
+}
+
+/* Estilos para los botones de navegación */
+.carousel-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.carousel-button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-button.prev {
+  left: 10px;
+}
+
+.carousel-button.next {
+  right: 10px;
+}
+
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+main{
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.containerBox2{
+  perspective-origin: 1000px;
+  perspective: -1000px;
+  transform-style: preserve-3d;
+  animation: rotate 10s linear infinite;
+  position: fixed;
+  top: -11.5rem;
+  left:3rem;
+}
+@media (max-width: 768px) {
+  .containerBox2 {
+    position:absolute;
+    top:1vh;
+  }
+  
+}
+
+.containerBox2:hover{
+  transform: scale3d(1.5, 1.5, 1.5);
+  animation-play-state: paused;
+  transform: scale(1.5);
+}
+.cara{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  mask-border: 100%;
+  border : 3px solid black;
+  background-color: rgba(17, 85, 232, 0.598);
+  /* animation: gradientColor 10s linear infinite; */
+  transform: translateZ(50px);
+  transition: all 3s ease-in-out;
+}
+.cara1 {
+  /* box-shadow: 5px 5px 5px 5px #e5fd0e; */
+  transform: translateX(50px) translateY(200px) rotateY(90deg);
+}
+
+.cara3{
+  transform: translateZ(50px)  rotateY(0deg);
+}
+.cara4 {
+  transform : rotateX(180deg) translateZ(50px) translateY(100px) rotateY(180deg);
+}
+.cara2 {
+  transform: translateX(-50px) translateY(100px) rotateY(90deg);
+}
+/* .cara3:hover{
+  background-color: blueviolet !important;
+} */
+.cara6 {
+  transform:translateY(-250px)  rotateX(90deg); 
+}
+.cara5 {
+  transform: translateY(-250px) rotateX(90deg);
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+
+  50% {
+    transform:  rotateX(20deg) rotateY(180deg);
+  }
+  100% {
+    transform:  rotateX(0deg) rotateY(360deg);
+  }
+  
+}
+.barra-container{
+  z-index: 999;
+  width: 100px;
+  height: 40px;
+  perspective-origin: 1000px;
+  perspective: -1000px;
+  transform-style: preserve-3d;
+  transform: rotate(0deg);
+  /* animation: rotateX 10s linear infinite; */
+}
+@keyframes rotateX {
+  0% {
+    transform: rotateX(0deg) ;
+  }
+  100% {
+    transform:  rotateX(360deg);
+  }
+}
+.barra {
+  background-color: black;
+  width: 100px;
+  height: 40px;
+}
+
+.barra1{
+  position:relative;
+  top:0px;
+  transform: rotateX(90deg);
+  background-color: blueviolet;
+}
+.barra2{
+  background-color: red !important;
+  position:relative;
+  top:-80px;
+  background-color: blueviolet;
+}
+.barra3{
+  transform: rotateX(135deg);
+  position:relative;
+  top:-160px;
+  background-color: blueviolet;
+}
+.barra4{
+  transform: rotateX(180deg);
+}
+
