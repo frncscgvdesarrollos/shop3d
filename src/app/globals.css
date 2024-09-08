@@ -49,6 +49,19 @@
   .imagenfondo2 {
     background-repeat: repeat-y;
   }
+  .quienesSomos{
+    background-image: url(../../public/quienesSomos.png) !important;
+    background-repeat: no-repeat;
+    background-origin: 40vh;
+    background-size: cover;
+    background-position: 25%;
+  }
+  .clienteFeliz{
+    background-image: url(../../public/clienteFeliz.png) !important;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
 }
 
 /* Carrusel Wrapper */
@@ -154,7 +167,7 @@ main{
 @media (max-width: 768px) {
   .containerBox2 {
     position:absolute;
-    top: -20vh;
+    top: -21vh;
   }
   
 }
