@@ -41,24 +41,24 @@ export default function Home() {
     <div className="min-w-screen min-h-screen bg-teal-800">
       <Header />
       <main className="bg-teal-900 min-h-screen relative top-0 z-[900]">
-      <section className="imagenfondo w-full h-[105vh] flex flex-col lg:flex-row justify-center lg:justify-around bg-teal-800 bg-opacity-80">
-  <div className="py-10 h-full lg:py-20 rounded-lg w-full lg:w-[40vw] flex flex-col items-center lg:items-start lg:ml-auto lg:mr-[12.5vw]">
-    <div className="flex flex-col items-center lg:items-start px-4 lg:px-0 py-10 lg:py-20">
-      <h1 className="text-orange-400 font-bold text-3xl sm:text-4xl lg:text-5xl text-center lg:text-left mb-4">
-        Bienvenido a Makers<i className="text-teal-100 font-bold -rotate-12 text-4xl sm:text-5xl lg:text-6xl">3</i>D.
+      <section className="imagenfondo w-full h-[95vh] lg:h-[105vh] flex flex-col lg:flex-row justify-center lg:justify-around bg-teal-800 bg-opacity-80">
+  <div className="py-36 h-full lg:py-20 rounded-lg w-full lg:w-[40vw] flex flex-col items-center lg:items-start lg:ml-auto lg:mr-[12.5vw]">
+    <div className="flex flex-col lg:flex-row items-center lg:items-end px-4 lg:px-0 py-10 lg:py-20 lg:mr-[4rem]">
+      <h1 className="text-orange-400 font-bold text-3xl sm:text-4xl lg:text-5xl text-center lg:text-right  mb-4">
+        Bienvenido a Makers<i className="text-teal-100 font-bold -rotate-12 text-4xl sm:text-5xl lg:text-6xl">3</i>D
       </h1>
       <Image 
         src="/mascota.png" 
         alt="Mascota" 
-        className="w-32 sm:w-40 lg:w-60 lg:mr-[5vw]" 
+        className="w-32 sm:w-40 lg:w-60 lg:ml-[5rem]" 
         width={640} 
         height={480} 
       />
     </div>
-    <p className="text-2xl sm:text-3xl lg:text-4xl text-center lg:text-left font-bold text-orange-300 mt-6 lg:mt-10 lg:ml-[1rem]">
+    <p className="text-2xl sm:text-3xl lg:text-4xl text-right lg:text-right font-bold text-orange-300 mt-6 lg:mt-10 lg:ml-[10rem]">
       Impresiones a pedido <br /> y a medida.
     </p>
-    <section className="mt-8 lg:mt-12 flex flex-col items-center gap-8 px-6 lg:px-0 lg:w-[40vw]">
+    <section className="mt-8 lg:mt-20 flex flex-col items-center gap-8 px-6 lg:px-0 lg:w-[40vw]">
       <div className="relative w-full flex flex-col items-center"
            onMouseEnter={() => setIsHovered(true)}
            onMouseLeave={() => setIsHovered(false)}>
