@@ -10,9 +10,8 @@ const montserrat = Montserrat({
 });
 
 export const metadata = {
-  title: 'Shop3d',
+  title: 'Makers',
   description: 'IMPRESIONES 3D',
-  favicon: '/brazo.png',
 }
 
 export default function RootLayout({ children  }) {
