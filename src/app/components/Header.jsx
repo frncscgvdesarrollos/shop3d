@@ -22,25 +22,19 @@ export default function Header() {
             setClientData(data);
             setLoading(false);
             // Redirigir según el estado de los datos del cliente
-            if (!data && router.pathname !== '/shop/register') {
+            if (!data) {
               router.push('/shop/register');
             }
           })
           .catch(error => {
             console.error("Error obteniendo datos del usuario:", error);
-            if (router.pathname !== '/shop/register') {
-              router.push('/shop/register');
-            }
+            router.push('/shop/register');
           });
       } else {
-        if (router.pathname !== '/shop/register') {
-          router.push('/shop/register');
-        }
-        setLoading(false);
+        router.push('/shop/register');
       }
     } else {
-      // Redirigir a /shop solo si no estás en /shop o subrutas
-      if (!router.pathname.startsWith('/shop') && router.pathname !== '/') {
+      if (window.location.pathname !== '/shop') {
         router.push('/shop');
       }
       setLoading(false);
@@ -53,9 +47,7 @@ export default function Header() {
         .then(result => {
           console.log('Sign-in result:', result);
           // Redirigir a /shop si hay un usuario después del inicio de sesión
-          if (router.pathname === '/') {
-            router.push('/shop');
-          }
+          router.push('/shop');
         })
         .catch((error) => {
           console.error("Error durante el inicio de sesión:", error);
@@ -85,7 +77,7 @@ export default function Header() {
     <header className="relative py-2 h-[3rem] text-white flex flex-col lg:flex-row items-center py-8 px-4 lg:px-16 z-[999]">
       <Cubo />
       <div onClick={() => setMisDatos(!misdatos)} className="absolute top-2 right-2 text-xl flex items-end justify-end ">
-          <a href="/shop/nosotros" className="text-orange-400 hover:text-orange-200">Nosotros</a>
+          <a href="/shop/nosotros" className="text-orange-400">Nosotros</a>
         <div className="flex items-center gap-2 rounded-lg transition-transform transform hover:scale-105 cursor-pointer">
           {user ? (
             <>
