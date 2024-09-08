@@ -10,7 +10,7 @@ const poppins = Poppins({ subsets: ['latin'], weight: ['400', '600', '700'], var
 
 function ModalConfirmacion({ producto, onClose, onConfirm }) {
   return (
-    <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
+    <div className="fixed  inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
       <div className="bg-teal-200 rounded-lg shadow-xl p-6 w-11/12 max-w-lg">
         <div className='flex items-center justify-center'>
           <h2 className="text-3xl font-semibold text-teal-900 mb-4">Confirmar compra</h2>
@@ -131,37 +131,42 @@ export default function ListProducts() {
   }
 
   return (
-      <div className="imagenfondo2 min-h-screen flex flex-col md:flex-row items-start justify-center bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600">
-        <aside className='bg-teal-700 bg-opacity-80 lg:pt-52 h-full shadow-lg w-full md:w-1/6'>
+      <div className="imagenfondo2 lg:w-[80vw] lg:mx-auto min-h-screen flex flex-col md:flex-row items-start justify-center bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600">
+        <aside className='bg-teal-700 bg-opacity-80 lg:pt-52 h-full shadow-lg w-full md:w-full lg:w-2/5'>
           <div className='flex w-full justify-end items-center md:justify-center py-5 lg:py-0'>
             <h2 className='text-center text-xl font-bold text-white drop-shadow-md'>Los más pedidos</h2>
             <img src='./mascota.png' width={100} height={100} alt='mascota shop3d' className=''/>
           </div>
           <ul className="flex flex-col w-full py-4">
-              {productosParaMostrar.map((producto, index) => (
-                  <li
-                      key={producto.id}
-                      className={`flex items-center justify-between w-full p-2 shadow-md transition-transform transform hover:scale-105 hover:shadow-lg ${
-                          index % 2 === 0 ? 'bg-teal-500' : 'bg-teal-700'
-                      }`}
-                  >
-                      <div className="flex items-center gap-4">
-                          <img src={producto.imagen} className="w-16 h-16 rounded-lg shadow-md" alt="imagen" />
-                          <h3 className="text-xl font-semibold text-blue-900 mb-2">
-                              {producto.nombre}
-                          </h3>
-                      </div>
-                      <button
-                          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
-                          onClick={() => handleComprar(producto)}
-                      >
-                          Comprar
-                      </button>
-                  </li>
-              ))}
-          </ul>
+  {productosParaMostrar.map((producto, index) => (
+    <li
+      key={producto.id}
+      className={`flex items-center justify-between w-full p-2 shadow-sm transition-transform transform hover:scale-105 hover:shadow-md ${
+        index % 2 === 0 ? 'bg-teal-100' : 'bg-teal-200'
+      }`}
+    >
+      <div className="flex items-center gap-4">
+        <img
+          src={producto.imagen}
+          className="w-14 h-14 rounded-md shadow-sm"
+          alt="imagen"
+        />
+        <h3 className="text-lg font-medium text-blue-800 mb-2">
+          {producto.nombre}
+        </h3>
+      </div>
+      <button
+        className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-1 px-3 rounded transition duration-200 ease-in-out"
+        onClick={() => handleComprar(producto)}
+      >
+        Comprar
+      </button>
+    </li>
+  ))}
+</ul>
+
         </aside>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-right text-teal-100 mb-8 lg:text-left drop-shadow-lg">
             Descubre Nuestros Productos
           </h1>
@@ -195,7 +200,7 @@ export default function ListProducts() {
           </div>
     
           {/* Lista de productos */}
-          <ul className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 lg:mt-10">
+          <ul className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 lg:mt-10">
             {productosFiltrados.map(producto => (
               <li 
                 key={producto.id} 

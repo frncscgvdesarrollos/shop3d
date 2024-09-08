@@ -22,19 +22,26 @@ export default function Header() {
             setClientData(data);
             setLoading(false);
             // Redirigir según el estado de los datos del cliente
-            if (!data) {
+            if (!data && router.pathname !== '/shop/register') {
               router.push('/shop/register');
             }
           })
           .catch(error => {
             console.error("Error obteniendo datos del usuario:", error);
-            router.push('/shop/register');
+            if (router.pathname !== '/shop/register') {
+              router.push('/shop/register');
+            }
           });
       } else {
-        router.push('/shop/register');
+        if (router.pathname !== '/shop/register') {
+          router.push('/shop/register');
+        }
+        setLoading(false);
       }
     } else {
-      if (window.location.pathname !== '/shop') {
+      // Redirigir a /shop solo si no estás en /shop o subrutas
+      const isShopPage = /^\/shop/.test(router.pathname);
+      if (!isShopPage && router.pathname !== '/') {
         router.push('/shop');
       }
       setLoading(false);
@@ -47,7 +54,9 @@ export default function Header() {
         .then(result => {
           console.log('Sign-in result:', result);
           // Redirigir a /shop si hay un usuario después del inicio de sesión
-          router.push('/shop');
+          if (router.pathname === '/') {
+            router.push('/shop');
+          }
         })
         .catch((error) => {
           console.error("Error durante el inicio de sesión:", error);
@@ -73,11 +82,12 @@ export default function Header() {
   // No renderizar nada mientras se está cargando
   if (loading) return null;
 
+
   return (
-    <header className="relative py-2 h-[3rem] text-white flex flex-col lg:flex-row items-center py-8 px-4 lg:px-16 z-[999]">
+    <header className="relative py-2 h-[3rem] text-white flex flex-col lg:flex-row items-end py-8 px-4 lg:px-16 z-[999]">
       <Cubo />
-      <div onClick={() => setMisDatos(!misdatos)} className="absolute top-2 right-2 text-xl flex items-end justify-end ">
-          <a href="/shop/nosotros" className="text-orange-400">Nosotros</a>
+
+      <div onClick={() => setMisDatos(!misdatos)} className="absolute top-2 right-2 text-xl flex flex-col items-center gap-2 justify-end ">
         <div className="flex items-center gap-2 rounded-lg transition-transform transform hover:scale-105 cursor-pointer">
           {user ? (
             <>
@@ -93,6 +103,11 @@ export default function Header() {
             </div>
           )}
         </div>
+        <nav className="w-full flex items-end justify-end lg:justify-center gap-2 bg-teal-900 px-2">
+          <a href="/shop/nosotros" className="text-orange-400 hover:text-orange-600 font-semibold text-sm lg:text-lg">Nosotros</a>
+          <a href="/shop/printers" className="text-orange-400 hover:text-orange-600 font-semibold text-sm lg:text-lg">Makers</a>
+          <a href="/shop/contacto" className="text-orange-400 hover:text-orange-600 font-semibold text-sm lg:text-lg">Diseño</a>
+        </nav>
       </div>
 
       {misdatos && user && clientData && (

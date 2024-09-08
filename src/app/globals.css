@@ -27,8 +27,8 @@
   background-image: url(../../public/main.png) !important;
   background-repeat: no-repeat;
   background-size: auto; /* Mantiene el tamaño original de la imagen */
-  background-position-x: 35vw;
-  background-position-y: 32vw;
+  background-position-x: 25vw;
+  background-position-y: 22vw;
 }
 .imagenfondoprinters{
   background-image: url(../../public/printers2.png) !important;
