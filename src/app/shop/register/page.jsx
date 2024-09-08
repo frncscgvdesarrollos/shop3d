@@ -1,13 +1,14 @@
 'use client'
 import { UserAuth } from '../../context/AuthContext';
 import { useState, useEffect } from 'react';
-import { createUser } from '../../firebase';
+import { createUser } from '@/app/firebase';
 
 export default function Register() {
     const { user } = UserAuth();
+    const uid = user?.uid;
 
     const [userRegister, setUserRegister] = useState({
-        uid: '',
+        uid: uid || '',
         nombre: '',
         apellido: '',
         direccion: '',

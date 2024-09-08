@@ -3,40 +3,51 @@ import { useState, useEffect } from "react";
 import Cubo from "./Cubo";
 import { UserAuth } from "../context/AuthContext";
 import { getUser } from "../firebase";
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const { user, googleSignIn, logOut } = UserAuth();
+  const router = useRouter();
   const uid = user?.uid;
   const [misdatos, setMisDatos] = useState(false);
   const [clientData, setClientData] = useState(null);
-
-  useEffect(() => {
-    if (user && window.location.pathname !== '/shop'
-     && window.location.pathname !== '/shop/panelAdmin' 
-     && window.location.pathname !== '/shop/venta/success'
-     && window.location.pathname !== '/shop/venta/cancel'
-     && window.location.pathname !== '/shop/venta/pending'
-     && window.location.pathname !== '/shop/register'
-    ) {
-      window.location.href = '/shop';
-    }
-  }, [user]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
-      getUser(uid)
-        .then(data => setClientData(data))
-        .catch(error => {
-          window.location.href =" /shop/register"
-        });
+      if (uid) {
+        // Obtener datos del cliente
+        getUser(uid)
+          .then(data => {
+            setClientData(data);
+            setLoading(false);
+            // Redirigir según el estado de los datos del cliente
+            if (!data) {
+              router.push('/shop/register');
+            }
+          })
+          .catch(error => {
+            console.error("Error obteniendo datos del usuario:", error);
+            router.push('/shop/register');
+          });
+      } else {
+        router.push('/shop/register');
+      }
+    } else {
+      if (window.location.pathname !== '/shop') {
+        router.push('/shop');
+      }
+      setLoading(false);
     }
-  }, [user]);
+  }, [user, uid, router]);
 
   const handleSignIn = () => {
     if (googleSignIn) {
       googleSignIn()
         .then(result => {
           console.log('Sign-in result:', result);
+          // Redirigir a /shop si hay un usuario después del inicio de sesión
+          router.push('/shop');
         })
         .catch((error) => {
           console.error("Error durante el inicio de sesión:", error);
@@ -49,15 +60,18 @@ export default function Header() {
   const handleLogout = async () => {
     try {
       await logOut();
-      window.location.href = '/';
+      router.push('/');
     } catch (error) {
       console.error("Error durante el cierre de sesión:", error);
     }
   };
 
   const handleAdmin = () => {
-    window.location.href = '/shop/panelAdmin';
+    router.push('/shop/panelAdmin');
   };
+
+  // No renderizar nada mientras se está cargando
+  if (loading) return null;
 
   return (
     <header className="relative py-2 h-[3rem] text-white flex flex-col lg:flex-row items-center py-8 px-4 lg:px-16 z-[999]">
@@ -88,7 +102,6 @@ export default function Header() {
               <svg className="w-4 h-4 text-white bg-orange-500 rounded-full" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
               </svg>
-
             </button>
             <button className="bg-teal-500 font-semibold py-2 px-4 rounded ml-4 h-full" onClick={() => setMisDatos(false)}>X</button>
           </div>
