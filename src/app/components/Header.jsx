@@ -30,7 +30,17 @@ export default function Header() {
   }, [user]);
 
   const handleSignIn = () => {
+    if (googleSignIn) {
       googleSignIn()
+        .then(result => {
+          console.log('Sign-in result:', result);
+        })
+        .catch((error) => {
+          console.error("Error durante el inicio de sesión:", error);
+        });
+    } else {
+      console.error('googleSignIn no está definido o no devuelve una promesa.');
+    }
   };
 
   const handleLogout = async () => {

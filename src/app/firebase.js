@@ -5,14 +5,15 @@ import { getStorage , ref,  uploadBytes, getDownloadURL, getBytes  } from "fireb
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAxK4nhPAGhDRcb-_rDI_Ftyt1WT2_zjRo",
-  authDomain: "shop3d-8d707.firebaseapp.com",
-  projectId: "shop3d-8d707",
-  storageBucket: "shop3d-8d707.appspot.com",
-  messagingSenderId: "84781038194",
-  appId: "1:84781038194:web:af415cb37e1fa6e24320eb",
-  measurementId: "G-LKJWL1H8SX"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
+
 
 const app = initializeApp(firebaseConfig);
 export  const auth = getAuth(app);
