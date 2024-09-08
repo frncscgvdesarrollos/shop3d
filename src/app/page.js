@@ -41,7 +41,7 @@ export default function Home() {
     <div className="min-w-screen min-h-screen bg-teal-800">
       <Header />
       <main className="bg-teal-900 min-h-screen relative top-0 z-[900]">
-      <section className="imagenfondo w-full h-auto lg:h-[95vh] flex flex-col lg:flex-row justify-center lg:justify-around bg-teal-800 bg-opacity-80">
+      <section className="imagenfondo w-full h-[105vh] flex flex-col lg:flex-row justify-center lg:justify-around bg-teal-800 bg-opacity-80">
   <div className="py-10 h-full lg:py-20 rounded-lg w-full lg:w-[40vw] flex flex-col items-center lg:items-start lg:ml-auto lg:mr-[12.5vw]">
     <div className="flex flex-col items-center lg:items-start px-4 lg:px-0 py-10 lg:py-20">
       <h1 className="text-orange-400 font-bold text-3xl sm:text-4xl lg:text-5xl text-center lg:text-left mb-4">
