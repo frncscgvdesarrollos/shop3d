@@ -80,6 +80,7 @@ export default function Header() {
         <div className="flex items-center gap-2 rounded-lg transition-transform transform hover:scale-105 cursor-pointer">
           {user ? (
             <>
+              <a href="/shop/nosotros" className="text-orange-400 hover:text-orange-200">Nosotros</a>
               <span className="text-sm lg:text-lg font-medium text-teal-800">Hola, {user.displayName || "Usuario"}</span>
               <button onClick={handleLogout} className="bg-teal-500 hover:bg-teal-600 text-teal-800 font-semibold py-2 px-2 rounded ml-4 text-sm lg:text-lg">Cerrar Sesión</button>
             </>
