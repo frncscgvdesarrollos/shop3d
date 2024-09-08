@@ -14,7 +14,15 @@
   background-size: auto; /* Mantiene el tamaño original de la imagen */
   background-position-x: -8vw;
 }
+@media (max-width:1400px){
+  .imagenfondo {
+    background-image: url(../../public/main.png) !important;
+    background-repeat: no-repeat;
+    background-size: auto; /* Mantiene el tamaño original de la imagen */
+    background-position-x: -45vw;
+  }
 
+}
 .imagenfondo2 {
   background-image: url(../../public/main.png) !important;
   background-repeat: no-repeat;
