@@ -6,6 +6,7 @@ import { getUser } from "../firebase";
 
 export default function Header() {
   const { user, googleSignIn, logOut } = UserAuth();
+  const uid = user?.uid;
   const [misdatos, setMisDatos] = useState(false);
   const [clientData, setClientData] = useState(null);
 
@@ -23,9 +24,11 @@ export default function Header() {
 
   useEffect(() => {
     if (user) {
-      getUser(user.uid)
+      getUser(uid)
         .then(data => setClientData(data))
-        .catch(error => console.error("Error al obtener datos del usuario:", error));
+        .catch(error => {
+          window.location.href =" /shop/register"
+        });
     }
   }, [user]);
 
