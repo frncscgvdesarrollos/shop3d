@@ -14,46 +14,49 @@ export default function Header() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      if (uid) {
-        // Obtener datos del cliente
-        getUser(uid)
-          .then(data => {
+    const handleRedirection = async () => {
+      try {
+        if (user) {
+          if (uid) {
+            const data = await getUser(uid);
             setClientData(data);
-            setLoading(false);
-            // Redirigir según el estado de los datos del cliente
-            if (!data && router.pathname !== '/shop/register') {
-              router.push('/shop/register');
+            if (!data) {
+              if (router.pathname !== '/shop/register') {
+                router.push('/shop/register');
+              }
+            } else {
+              if (!/^\/shop/.test(router.pathname)) {
+                router.push('/shop');
+              }
             }
-          })
-          .catch(error => {
-            console.error("Error obteniendo datos del usuario:", error);
-            if (router.pathname !== '/shop/register') {
-              router.push('/shop/register');
+          } else {
+            if (!/^\/shop/.test(router.pathname) && router.pathname !== '/') {
+              router.push('/shop');
             }
-          });
-      } else {
+          }
+        } else {
+          if (!/^\/shop/.test(router.pathname) && router.pathname !== '/') {
+            router.push('/shop');
+          }
+        }
+      } catch (error) {
+        console.error("Error obteniendo datos del usuario:", error);
         if (router.pathname !== '/shop/register') {
           router.push('/shop/register');
         }
+      } finally {
         setLoading(false);
       }
-    } else {
-      // Redirigir a /shop solo si no estás en /shop o subrutas
-      const isShopPage = /^\/shop/.test(router.pathname);
-      if (!isShopPage && router.pathname !== '/') {
-        router.push('/shop');
-      }
-      setLoading(false);
-    }
-  }, [user, uid, router]);
+    };
+
+    handleRedirection();
+  }, [user, uid, router.pathname]); // Remover `loading` de las dependencias
 
   const handleSignIn = () => {
     if (googleSignIn) {
       googleSignIn()
         .then(result => {
           console.log('Sign-in result:', result);
-          // Redirigir a /shop si hay un usuario después del inicio de sesión
           if (router.pathname === '/') {
             router.push('/shop');
           }
@@ -79,15 +82,13 @@ export default function Header() {
     router.push('/shop/panelAdmin');
   };
 
-  // No renderizar nada mientras se está cargando
-  if (loading) return null;
-
+  if (loading) return <div>Loading...</div>; // Mensaje de carga para depuración
 
   return (
     <header className="relative py-2 h-[3rem] text-white flex flex-col lg:flex-row items-end py-8 px-4 lg:px-16 z-[999]">
       <Cubo />
 
-      <div onClick={() => setMisDatos(!misdatos)} className="absolute top-2 right-2 text-xl flex flex-col items-center gap-2 justify-end ">
+      <div onClick={() => setMisDatos(!misdatos)} className="absolute top-2 right-2 text-xl flex flex-col items-center gap-2 justify-end">
         <div className="flex items-center gap-2 rounded-lg transition-transform transform hover:scale-105 cursor-pointer">
           {user ? (
             <>
