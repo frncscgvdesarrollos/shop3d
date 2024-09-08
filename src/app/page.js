@@ -1,14 +1,35 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Header from "./components/Header";
-import { obtenerComentarios } from './firebase'; 
+import { getDatosCliente, obtenerComentarios } from './firebase'; 
 import { motion } from 'framer-motion'; 
-import Image from 'next/image'; // Importa el componente Image de Next.js
+import Image from 'next/image';
+import { UserAuth } from './context/AuthContext';
 
 export default function Home() {
+  const { user } = UserAuth();
+  const uid = user?.uid;
+
+  const [datosCliente, setDatosCliente] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [comentarios, setComentarios] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
+
+  // Efecto para obtener los datos del cliente y redirigir si no existe
+  useEffect(() => {
+    if (uid) {
+      getDatosCliente(uid).then((data) => {
+        setDatosCliente(data);
+        // Puedes añadir lógica adicional aquí si es necesario
+      }).catch(error => {
+        // Redirige al usuario a la página de registro si ocurre un error
+        window.location.href = "/shop/register";
+      });
+    } else {
+      // Si no hay un UID, redirige a la página de registro
+      window.location.href = "/shop/register";
+    }
+  }, [uid]);
 
   // Efecto para obtener los comentarios al cargar el componente
   useEffect(() => {
@@ -36,6 +57,7 @@ export default function Home() {
       return () => clearInterval(interval);
     }
   }, [isHovered, comentarios.length]);
+
 
   return (
     <div className="min-w-screen min-h-screen bg-teal-800">
