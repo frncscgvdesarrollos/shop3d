@@ -37,11 +37,12 @@ export default function Cubo () {
 
         </div>
         
-        <div className=" flex justify-center rounded-full bg-teal-500 border-4 border-teal-600 w-[100px] h-[100px]  text-center p-10 cara3 react hover:rotate-x-[360] transition duration-300">
-          <h2 className="text-left text-2xl font-bold text-teal-900 hover:rotate-y-360 transition duration-300">Shop
-            <strong className="text-teal-900 rotate-12 ">  
-              3D
+        <div className=" flex justify-center rounded-full bg-teal-500 border-4 border-teal-600 w-[100px] h-[100px]  text-center p-10 cara3 react hover:rotate-x-[360] transition duration-300 scale-110">
+          <h2 className="text-left text-lg text-orange-700 hover:rotate-y-360 transition duration-300">Makers
+            <strong className="text-orange-100 rotate-12 text-lg ">  
+              3
             </strong>
+              D
             </h2>
         </div>
         

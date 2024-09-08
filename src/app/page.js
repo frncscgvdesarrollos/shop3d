@@ -45,7 +45,7 @@ export default function Home() {
           <div className="lg:ml-auto lg:mr-[12.5vw] py-10 h-[100vh] lg:py-20 rounded-lg w-full lg:w-[40vw] h-full">
             <div className="flex justify-center lg:justify-center items-center px-4 lg:px-0 py-20">
               <h1 className="text-orange-400 font-bold text-3xl sm:text-4xl lg:text-5xl text-center mb-4">
-                Bienvenido a SHOP<i className="text-teal-100 font-bold -rotate-12 text-4xl sm:text-5xl lg:text-6xl">3</i>D.
+                Bienvenido a Makers<i className="text-teal-100 font-bold -rotate-12 text-4xl sm:text-5xl lg:text-6xl">3</i>D
               </h1>
               <Image 
                 src="/mascota.png" 
@@ -55,7 +55,7 @@ export default function Home() {
                 height={480} 
               />
             </div>
-            <p className="text-2xl sm:text-3xl lg:text-4xl text-center  font-bold text-orange-300 mt-6 lg:mt-10 lg:ml-[1rem]">
+            <p className="text-2xl sm:text-3xl lg:text-4xl text-center  font-bold text-orange-300  lg:mr-[2rem]">
               Impresiones a pedido <br/>y a medida.
             </p>
             <section className="mt-8 lg:mt-12 flex flex-col items-center gap-8 px-6 lg:w-[40vw]">
@@ -188,7 +188,7 @@ export default function Home() {
               No pierdas la oportunidad de convertir tu impresora en una fuente de ingresos. ¡Actúa ahora y únete a 
               nosotros para comenzar a ganar dinero mientras ayudas a otros con sus necesidades de impresión!
             </p>
-            <button className='ml-auto mr-[2rem] aling-end bg-orange-400 hover:bg-orange-600 text-yellow-500 font-bold py-2 px-6 rounded-full transition duration-300 ease-in-out'> Quiero ser un printer!</button>
+            <button className='ml-auto mr-[2rem] aling-end bg-orange-400 hover:bg-orange-600 text-yellow-500 font-bold py-2 px-6 rounded-full transition duration-300 ease-in-out'> Quiero ser un Makers!</button>
           </div>
           
           <div className='relative lg:absolute lg:right-0 lg:top-1/2 lg:w-1/2 lg:-translate-y-1/2 lg:-mt-20'>
