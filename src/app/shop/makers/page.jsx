@@ -11,7 +11,7 @@ export default function QuieroSerUnMaker() {
         <div className="max-w-3xl mx-auto">
           {/* Descripción de ser un Maker */}
           <section className="mb-10 bg-white p-8 rounded-lg shadow-md">
-            <h1 className="text-5xl font-bold mb-8 text-center text-teal-600">¿Qué significa ser un Maker con nosotros?</h1>
+            <h1 className="text-5xl font-bold mb-8 text-center text-teal-600">¿Qué significa ser un Maker?</h1>
             <div className="flex justify-center mb-10">
               <img src="/printers.png" alt="makers!" className="w-full max-w-4xl object-cover rounded-lg" />
             </div>
@@ -59,7 +59,7 @@ export default function QuieroSerUnMaker() {
           </section>
   
           {/* Botón de suscripción */}
-          <div className="text-center mb-[60vh] lg:mb-10">
+          <div className="text-center mb-[60vh] lg:mb-[20vh]">
             <button onClick={() => handleRegister()} className="bg-orange-500 text-white py-3 px-8 rounded-full text-lg font-bold shadow-md hover:bg-teal-600 transition duration-300">
               ¡Regístrate como Maker ahora!
             </button>

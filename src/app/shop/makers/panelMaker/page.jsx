@@ -142,21 +142,21 @@ export default function PanelMaker() {
     
                             {/* Detalles de la impresión actual */}
                             <div className="flex-1">
-                                {selectedPrinter.currentImpresion ? (
-                                    <div className="bg-gray-100 p-4 rounded shadow-md">
-                                        <h3 className="text-xl font-semibold mb-2">Detalles de la Actual Impresión</h3>
-                                        <p><strong>ID del Pedido:</strong> {selectedPrinter.currentImpresion.producto.id}</p>
-                                        <p><strong>Descripción del Producto:</strong> {selectedPrinter.currentImpresion.producto.descripcion}</p>
-                                        <p><strong>Nombre del Producto:</strong> {selectedPrinter.currentImpresion.producto.nombre}</p>
-                                        <p><strong>Precio del Producto:</strong> ${selectedPrinter.currentImpresion.producto.precio}</p>
-                                        <p><strong>Tiempo de Producción:</strong> {selectedPrinter.currentImpresion.producto.tiempo} horas</p>
-                                        <p><strong>Status del Pedido:</strong> {selectedPrinter.currentImpresion.producto.status}</p>
-                                        <img src={selectedPrinter.currentImpresion.producto.imagen} alt="pedido actual" className="mt-2 rounded" width={200} height={200} />
-                                    </div>
-                                ) : (
-                                    <p className="text-gray-600 mt-4">No hay impresión actual.</p>
-                                )}
-                            </div>
+                            {selectedPrinter.currentImpresion && selectedPrinter.currentImpresion.producto ? (
+                                <div className="bg-gray-100 p-4 rounded shadow-md">
+                                    <h3 className="text-xl font-semibold mb-2">Detalles de la Actual Impresión</h3>
+                                    <p><strong>Descripción del Producto:</strong> {selectedPrinter.currentImpresion.producto.descripcion}</p>
+                                    <p><strong>Nombre del Producto:</strong> {selectedPrinter.currentImpresion.producto.nombre}</p>
+                                    <p><strong>Precio del Producto:</strong> ${selectedPrinter.currentImpresion.producto.precio}</p>
+                                    <p><strong>Tiempo de Producción:</strong> {selectedPrinter.currentImpresion.producto.tiempo} horas</p>
+                                    <p><strong>Status del Pedido:</strong> {selectedPrinter.currentImpresion.producto.status}</p>
+                                    <img src={selectedPrinter.currentImpresion.producto.imagen} alt="pedido actual" className="mt-2 rounded" width={200} height={200} />
+                                </div>
+                            ) : (
+                                <p className="text-gray-600 mt-4">No hay impresión actual.</p>
+                            )}
+                        </div>
+
                         </div>
     
                         {/* Botones para iniciar y finalizar la producción */}
