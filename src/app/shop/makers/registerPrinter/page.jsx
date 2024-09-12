@@ -1,5 +1,5 @@
 'use client'
-import { UserAuth } from '../../context/AuthContext';
+import { UserAuth } from '../../../context/AuthContext';
 import { useState, useEffect } from 'react';
 // import { createPrinter } from '../../firebase'; // Asegúrate de implementar esta función en tu archivo de Firebase
 

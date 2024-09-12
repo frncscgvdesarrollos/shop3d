@@ -14,7 +14,7 @@ export default function Register() {
         direccion: '',
         telefono: '',
         dni: '',
-        codigoPostal:''
+        codigoPostal:'',
         role: 'client'
     });
 
