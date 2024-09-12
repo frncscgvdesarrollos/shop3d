@@ -11,12 +11,12 @@ export default function RegisterPrinter() {
         currentImpresion: {},
         horasImprimidas: 0,
         horasRestantes: 0,
-        id: 1, // Asigna el id de impresora de manera dinámica si es necesario
+        id: '', // El ID se asignará dinámicamente
         lastImpresion: {},
         pedido: [],
         pedidosTotales: 0,
         modelo: '', // Agregar modelo de impresora
-        volumenImpresion: '', // Volumen de impresión de la impresora
+        volumenImpresion: { ancho: '', alto: '', profundidad: '' }, // Volumen separado
         materiales: '', // Materiales soportados
         tipo: '' // Tipo de impresora (SLA, DLP, MSLA, etc.)
     });
@@ -37,6 +37,18 @@ export default function RegisterPrinter() {
         setPrinterInfo(prevState => ({
             ...prevState,
             [name]: value
+        }));
+    }
+
+    // Maneja cambios para el volumen de impresión
+    function handleVolumenChange(e) {
+        const { name, value } = e.target;
+        setPrinterInfo(prevState => ({
+            ...prevState,
+            volumenImpresion: {
+                ...prevState.volumenImpresion,
+                [name]: value
+            }
         }));
     }
 
@@ -75,18 +87,38 @@ export default function RegisterPrinter() {
                     />
                 </div>
 
-                {/* Campo para el volumen de impresión */}
+                {/* Campos separados para el volumen de impresión */}
                 <div>
-                    <label className='block text-gray-700 font-bold mb-2' htmlFor='volumenImpresion'>Volumen de Impresión (mm)</label>
-                    <input 
-                        type='text' 
-                        name='volumenImpresion' 
-                        value={printerInfo.volumenImpresion} 
-                        onChange={handleChange}
-                        className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-green-300' 
-                        placeholder='Ej. 120x120x120 mm'
-                        required 
-                    />
+                    <label className='block text-gray-700 font-bold mb-2'>Volumen de Impresión (mm)</label>
+                    <div className='flex space-x-4'>
+                        <input 
+                            type='text' 
+                            name='ancho' 
+                            value={printerInfo.volumenImpresion.ancho} 
+                            onChange={handleVolumenChange}
+                            className='w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-green-300' 
+                            placeholder='Ancho'
+                            required 
+                        />
+                        <input 
+                            type='text' 
+                            name='alto' 
+                            value={printerInfo.volumenImpresion.alto} 
+                            onChange={handleVolumenChange}
+                            className='w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-green-300' 
+                            placeholder='Alto'
+                            required 
+                        />
+                        <input 
+                            type='text' 
+                            name='profundidad' 
+                            value={printerInfo.volumenImpresion.profundidad} 
+                            onChange={handleVolumenChange}
+                            className='w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-green-300' 
+                            placeholder='Profundidad'
+                            required 
+                        />
+                    </div>
                 </div>
 
                 {/* Campo para los materiales soportados */}

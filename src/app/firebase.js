@@ -419,11 +419,12 @@ export async function createImpresora(impresora) {
   // Asignar el siguiente nombre a la impresora
   const newImpresoraId = `impresora${maxNum + 1}`;
 
-  // Crear el nuevo documento de impresora
+  // Crear el nuevo documento de impresora con el id adecuado
   try {
     const docRef = await addDoc(collection(db, 'impresoras'), {
       ...impresora,
-      id: newImpresoraId // Asigna el ID generado
+      id: newImpresoraId, // Asigna el ID generado
+      volumenImpresion: `${impresora.volumenImpresion.ancho}x${impresora.volumenImpresion.alto}x${impresora.volumenImpresion.profundidad}` // Formato del volumen
     });
     console.log('Impresora creada con ID: ', docRef.id);
   } catch (error) {
