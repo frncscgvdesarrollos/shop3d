@@ -122,7 +122,13 @@ export default function PanelMaker() {
                         ))}
                     </ul>
                 ) : (
-                    <p className="mt-4 text-gray-400">No tienes impresoras. ¡Agrega tu primera impresora!</p>
+                    <div>
+                        <p className="mt-4 text-gray-400">No tienes impresoras. ¡Agrega tu primera impresora!</p>
+                        <a href="/shop/makers/registerPrinter" className="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors">
+                            Agregar Impresora
+                        </a>
+                    </div>
+
                 )}
             </aside>
     
