@@ -406,27 +406,34 @@ export async function createImpresora(impresora) {
   const c = collection(db, 'impresoras');
   const querySnapshot = await getDocs(c);
 
-  // Calcular el siguiente nombre para la impresora
-  let maxNum = 0;
+  // Calcular el siguiente ID numérico para la impresora
+  let maxId = 0;
+
+  // Recorre todos los documentos en la colección
   querySnapshot.forEach((doc) => {
-    const docId = doc.id;
-    const num = parseInt(docId.replace('impresora', ''));
-    if (!isNaN(num) && num > maxNum) {
-      maxNum = num;
+    // Obtiene los datos del documento
+    const data = doc.data();
+    // Obtiene el ID numérico del documento
+    const id = data.id;
+
+    // Actualiza el ID máximo si se encuentra uno mayor
+    if (id > maxId) {
+      maxId = id;
     }
   });
 
-  // Asignar el siguiente nombre a la impresora
-  const newImpresoraId = `impresora${maxNum + 1}`;
+  // Asignar el siguiente ID numérico
+  const newId = maxId + 1;
+  const newImpresoraId = `impresora${newId}`;
 
   // Crear el nuevo documento de impresora con el id adecuado
   try {
     const docRef = await addDoc(collection(db, 'impresoras'), {
       ...impresora,
-      id: newImpresoraId, // Asigna el ID generado
+      id: newId, // Asigna el ID numérico generado
       volumenImpresion: `${impresora.volumenImpresion.ancho}x${impresora.volumenImpresion.alto}x${impresora.volumenImpresion.profundidad}` // Formato del volumen
     });
-    console.log('Impresora creada con ID: ', docRef.id);
+    console.log('Impresora creada con ID: ', newImpresoraId);
   } catch (error) {
     console.error('Error al crear la impresora: ', error);
   }
