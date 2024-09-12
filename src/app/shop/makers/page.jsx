@@ -1,4 +1,7 @@
+'use client'
 export default function QuieroSerUnMaker() {
+  
+  
   function handleRegister(){
    return window.localStorage.href="/shop/makers/registerPrinter";
   }
@@ -56,8 +59,8 @@ export default function QuieroSerUnMaker() {
           </section>
   
           {/* Botón de suscripción */}
-          <div className="text-center">
-            <button onClick={handleRegister} className="bg-orange-500 text-white py-3 px-8 rounded-full text-lg font-bold shadow-md hover:bg-teal-600 transition duration-300">
+          <div className="text-center mb-[60vh] lg:mb-10">
+            <button onClick={() => handleRegister()} className="bg-orange-500 text-white py-3 px-8 rounded-full text-lg font-bold shadow-md hover:bg-teal-600 transition duration-300">
               ¡Regístrate como Maker ahora!
             </button>
           </div>
