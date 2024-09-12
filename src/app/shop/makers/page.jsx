@@ -1,4 +1,7 @@
 export default function QuieroSerUnMaker() {
+  function handleRegister(){
+   return window.localStorage.href="/shop/makers/registerPrinter";
+  }
     return (
       <div className="p-8 bg-gray-50 text-gray-900 pt-20 lg:pt-8 makerfondo">
         {/* Contenedor principal con ancho máximo */}
@@ -54,7 +57,7 @@ export default function QuieroSerUnMaker() {
   
           {/* Botón de suscripción */}
           <div className="text-center">
-            <button className="bg-orange-500 text-white py-3 px-8 rounded-full text-lg font-bold shadow-md hover:bg-teal-600 transition duration-300">
+            <button onClick={handleRegister} className="bg-orange-500 text-white py-3 px-8 rounded-full text-lg font-bold shadow-md hover:bg-teal-600 transition duration-300">
               ¡Regístrate como Maker ahora!
             </button>
           </div>
