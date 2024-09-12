@@ -14,6 +14,7 @@ export default function Register() {
         direccion: '',
         telefono: '',
         dni: '',
+        codigoPostal:''
         role: 'client'
     });
 
@@ -135,6 +136,18 @@ export default function Register() {
                         placeholder="Ingresa tu dirección"
                     />
                     {errors.direccion && <p className="text-red-500 text-sm mt-1">{errors.direccion}</p>}
+                </div>
+                <div className='flex flex-col'>
+                    <label htmlFor="direccion" className="font-semibold text-gray-700">Codigo Postal</label>
+                    <input 
+                        type="text" 
+                        name="codigoPostal" 
+                        value={userRegister.codigoPostal} 
+                        onChange={handleChange} 
+                        className={`mt-2 p-3 rounded-lg border ${errors.direccion ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring focus:ring-blue-200`}
+                        placeholder="Ingresa tu codigo postal"
+                    />
+                    {errors.codigoPostal && <p className="text-red-500 text-sm mt-1">{errors.codigoPostal}</p>}
                 </div>
                 <div className='flex flex-col'>
                     <label htmlFor="telefono" className="font-semibold text-gray-700">Teléfono</label>

@@ -14,6 +14,13 @@
   background-size: auto; /* Mantiene el tamaño original de la imagen */
   background-position-x: -8vw;
 }
+.makerfondo {
+  background-image: url(../../public/makerfondo.png) !important;
+  background-position: right bottom; /* Coloca la imagen en la esquina inferior derecha */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  background-size: 500px 500px; /* Ajusta el tamaño de la imagen al contenedor sin recortar */
+}
+
 @media (max-width:1400px){
   .imagenfondo {
     background-image: url(../../public/main.png) !important;
@@ -175,9 +182,8 @@ main{
 @media (max-width: 768px) {
   .containerBox2 {
     position:absolute;
-    top: -18vh;
+    top: -19.5vh;
   }
-  
 }
 
 .containerBox2:hover{
@@ -190,8 +196,8 @@ main{
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   mask-border: 100%;
-  border : 3px solid black;
-  background-color: rgba(17, 85, 232, 0.598);
+  border : 3px solid rgba(0, 0, 0, 0);
+  background-color: rgba(17, 85, 232, 0);
   /* animation: gradientColor 10s linear infinite; */
   transform: translateZ(50px);
   transition: all 3s ease-in-out;

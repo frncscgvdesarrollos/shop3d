@@ -38,7 +38,7 @@ export default function Nosotros(){
 
     return (
         <div className="min-w-screen min-h-screen bg-teal-800">
-            <a href="/">volver</a>
+          <a href="/shop" className='ml-auto mr-[5rem] bg-teal-600 text-teal-400 rounded-lg'>volver</a>
           <main className="bg-teal-900 min-h-screen relative top-0 z-[900]">
     
     

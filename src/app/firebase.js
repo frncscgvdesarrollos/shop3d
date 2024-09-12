@@ -685,6 +685,15 @@ export async function confirmacionEnvio(codigoEnvio, ventaId) {
   return null;
 }
 
+export async function getImpresoraByUid(uid) {
+  const q = query(collection(db, 'impresoras'), where("uid", "==", uid));
+  const querySnapshot = await getDocs(q);
+  let impresoras = [];
+  querySnapshot.forEach((doc) => {
+    impresoras.push({ id: doc.id, ...doc.data() }); // Incluye el id del documento
+  });
+  return impresoras;
+}
 
 
 

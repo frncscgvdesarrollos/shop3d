@@ -3,67 +3,62 @@ import { useState, useEffect } from "react";
 import Cubo from "./Cubo";
 import { UserAuth } from "../context/AuthContext";
 import { getUser } from "../firebase";
-import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const { user, googleSignIn, logOut } = UserAuth();
-  const router = useRouter();
-  const uid = user?.uid;
   const [misdatos, setMisDatos] = useState(false);
   const [clientData, setClientData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const handleRedirection = async () => {
-      try {
-        if (user) {
-          if (uid) {
-            const data = await getUser(uid);
-            setClientData(data);
-            if (!data) {
-              if (router.pathname !== '/shop/register') {
-                router.push('/shop/register');
-              }
-            } else {
-              if (!/^\/shop/.test(router.pathname)) {
-                router.push('/shop');
-              }
-            }
-          } else {
-            if (!/^\/shop/.test(router.pathname) && router.pathname !== '/') {
-              router.push('/shop');
-            }
-          }
-        } else {
-          if (!/^\/shop/.test(router.pathname) && router.pathname !== '/') {
-            router.push('/shop');
-          }
+    const fetchClientData = async () => {
+      if (user?.uid) {
+        try {
+          const data = await getUser(user?.uid);
+          setClientData(data);
+        } catch (error) {
+          console.error("Error fetching client data:", error);
         }
-      } catch (error) {
-        console.error("Error obteniendo datos del usuario:", error);
-        if (router.pathname !== '/shop/register') {
-          router.push('/shop/register');
-        }
-      } finally {
-        setLoading(false);
       }
+      setLoading(false);
     };
 
-    handleRedirection();
-  }, [user, uid, router.pathname]); // Remover `loading` de las dependencias
+    if (user) {
+      fetchClientData();
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
 
-  const handleSignIn = () => {
-    if (googleSignIn) {
-      googleSignIn()
-        .then(result => {
-          console.log('Sign-in result:', result);
-          if (router.pathname === '/') {
-            router.push('/shop');
+  useEffect(() => {
+    const checkAndRedirect = async () => {
+      if (user && !clientData && window.location.pathname !== '/shop/register') {
+        try {
+          const data = await getUser(user.uid);
+          if (!data) {
+            window.location.href = '/shop/register';
+          } else {
+            setClientData(data);
           }
-        })
-        .catch((error) => {
-          console.error("Error durante el inicio de sesión:", error);
-        });
+        } catch (error) {
+          console.error("Error checking user data:", error);
+        }
+      }
+      setLoading(false);
+    };
+  
+    if (!loading) {
+      checkAndRedirect();
+    }
+  }, [user, clientData]);
+
+  const handleSignIn = async () => {
+    if (googleSignIn) {
+      try {
+        await googleSignIn();
+      } catch (error) {
+        console.error("Error durante el inicio de sesión:", error);
+      }
     } else {
       console.error('googleSignIn no está definido o no devuelve una promesa.');
     }
@@ -72,23 +67,29 @@ export default function Header() {
   const handleLogout = async () => {
     try {
       await logOut();
-      router.push('/');
+      setClientData(null);
+      window.location.href = '/';
     } catch (error) {
       console.error("Error durante el cierre de sesión:", error);
     }
   };
 
   const handleAdmin = () => {
-    router.push('/shop/panelAdmin');
+    window.location.href = '/shop/panelAdmin';
   };
+  const handleEsMaker = () => {
+    window.location.href = '/shop/makers/panelMaker';
+  }
 
-  if (loading) return <div>Loading...</div>; // Mensaje de carga para depuración
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <header className="relative py-2 h-[3rem] text-white flex flex-col lg:flex-row items-end py-8 px-4 lg:px-16 z-[999]">
       <Cubo />
 
-      <div onClick={() => setMisDatos(!misdatos)} className="absolute top-2 right-2 text-xl flex flex-col items-center gap-2 justify-end">
+      <div onClick={() => setMisDatos(!misdatos)} className="absolute top-2 right-2 text-xl flex flex-col items-end gap-2 justify-end">
         <div className="flex items-center gap-2 rounded-lg transition-transform transform hover:scale-105 cursor-pointer">
           {user ? (
             <>
@@ -105,6 +106,7 @@ export default function Header() {
           )}
         </div>
         <nav className="w-full flex items-end justify-end lg:justify-center gap-2 bg-teal-900 px-2">
+          <a href="/shop" className="text-orange-400 hover:text-orange-600 font-semibold text-sm lg:text-lg">Tienda! </a>
           <a href="/shop/nosotros" className="text-orange-400 hover:text-orange-600 font-semibold text-sm lg:text-lg">Nosotros</a>
           <a href="/shop/printers" className="text-orange-400 hover:text-orange-600 font-semibold text-sm lg:text-lg">Makers</a>
           <a href="/shop/contacto" className="text-orange-400 hover:text-orange-600 font-semibold text-sm lg:text-lg">Diseño</a>
@@ -129,6 +131,9 @@ export default function Header() {
             <span><strong>DNI:</strong> {clientData.dni}</span>
             {clientData.role === "admin" && (
               <button className="bg-blue-500 hover:bg-blue-600 font-semibold py-2 px-4 rounded mt-4" onClick={handleAdmin}>Panel Admin</button>
+            )}
+            {clientData.esMaker === true && (
+              <button className="bg-blue-500 hover:bg-blue-600 font-semibold py-2 px-4 rounded mt-4 " onClick={handleEsMaker}>Panel Maker</button>
             )}
           </div>
         </div>

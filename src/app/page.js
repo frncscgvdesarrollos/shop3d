@@ -215,7 +215,7 @@ export default function Home() {
               nosotros para comenzar a ganar dinero mientras ayudas a otros con sus necesidades de impresión!
             </p>
             <a 
-              href="#contact" 
+              href="/shop/makers" 
               className='inline-block px-6 py-3 bg-orange-400 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out'>
               Quiero ser un Maker!
             </a>
