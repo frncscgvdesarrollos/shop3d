@@ -400,7 +400,8 @@ export async function finalizarVenta(ventaId) {
     throw error;
   }
 }
-/* crud impresoras */
+/*crud impresoras*/
+/*crear*/
 export async function createImpresora(impresora) {
   const c = collection(db, 'impresoras');
   const querySnapshot = await getDocs(c);
@@ -415,13 +416,19 @@ export async function createImpresora(impresora) {
     }
   });
 
-  const newDocId = `impresora${maxNum + 1}`;
+  // Asignar el siguiente nombre a la impresora
+  const newImpresoraId = `impresora${maxNum + 1}`;
 
-  // Crear el nuevo documento con el nombre calculado
-  const docRef = doc(db, 'impresoras', newDocId);
-  await setDoc(docRef, impresora);
-
-  return newDocId;
+  // Crear el nuevo documento de impresora
+  try {
+    const docRef = await addDoc(collection(db, 'impresoras'), {
+      ...impresora,
+      id: newImpresoraId // Asigna el ID generado
+    });
+    console.log('Impresora creada con ID: ', docRef.id);
+  } catch (error) {
+    console.error('Error al crear la impresora: ', error);
+  }
 }
 /* Actualizar una impresora */
 export async function updateImpresora(impresoraId, updatedData) {

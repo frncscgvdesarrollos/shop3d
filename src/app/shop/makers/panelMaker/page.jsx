@@ -120,6 +120,9 @@ export default function PanelMaker() {
                                 Impresora {printer.id || "Sin ID"}
                             </li>
                         ))}
+                        <a href="/shop/makers/registerPrinter" className="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors">
+                            Agregar Impresora
+                        </a>
                     </ul>
                 ) : (
                     <div>

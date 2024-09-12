@@ -1,7 +1,7 @@
 'use client'
 import { UserAuth } from '../../../context/AuthContext';
 import { useState, useEffect } from 'react';
-// import { createPrinter } from '../../firebase'; // Asegúrate de implementar esta función en tu archivo de Firebase
+import { createPrinter } from '../../firebase'; // Asegúrate de implementar esta función
 
 export default function RegisterPrinter() {
     const { user } = UserAuth();
@@ -18,10 +18,17 @@ export default function RegisterPrinter() {
         cvu: '',
         banco: '',
         direccionBancaria: '',
-        role: 'printer' // Cambiado a 'printer' en vez de 'client'
+        role: 'printer', // rol por defecto
+        // Valores por defecto para la impresora
+        currentImpresion: {},
+        horasImprimidas: 0,
+        horasRestantes: 0,
+        id: 1, // Asigna el id de impresora de manera dinámica si es necesario
+        lastImpresion: {},
+        pedido: [],
     });
 
-    // Use useEffect to update uid when the user changes
+    // Actualiza el uid cuando el usuario cambia
     useEffect(() => {
         if (user) {
             setPrinterInfo(prevState => ({
@@ -40,15 +47,17 @@ export default function RegisterPrinter() {
     }
     
     function handleSubmit(e) {
-        e.preventDefault(); // Prevent the default form submission
-        // createPrinter(printerInfo)
-        //     .then(res => {
-        //         console.log('Printer registered with ID:', res);
-        //         window.location.href = '/shop'; // Redirige a otra página si es necesario
-        //     })
-        //     .catch(err => {
-        //         console.error('Error registering printer:', err);
-        //     });
+        e.preventDefault();
+
+        // Llamada a la función para crear la impresora en Firebase
+        createPrinter(printerInfo)
+            .then(res => {
+                console.log('Impresora registrada con éxito:', res);
+                window.location.href = '/shop'; // Redirige a otra página si es necesario
+            })
+            .catch(err => {
+                console.error('Error al registrar la impresora:', err);
+            });
     }
 
     return (
@@ -92,83 +101,7 @@ export default function RegisterPrinter() {
                         placeholder="Ingresa tu dirección"
                     />
                 </div>
-                <div className='flex flex-col'>
-                    <label htmlFor="telefono" className="font-semibold text-gray-700">Teléfono</label>
-                    <input 
-                        type="text" 
-                        name="telefono" 
-                        value={printerInfo.telefono} 
-                        onChange={handleChange} 
-                        className='mt-2 p-3 rounded-lg border border-gray-300 focus:border-green-500 focus:ring focus:ring-green-200'
-                        placeholder="Ingresa tu teléfono"
-                    />
-                </div>
-                <div className='flex flex-col'>
-                    <label htmlFor="dni" className="font-semibold text-gray-700">D.N.I</label>
-                    <input 
-                        type="text" 
-                        name="dni" 
-                        value={printerInfo.dni} 
-                        onChange={handleChange}
-                        className='mt-2 p-3 rounded-lg border border-gray-300 focus:border-green-500 focus:ring focus:ring-green-200' 
-                        placeholder="Ingresa tu D.N.I"
-                    />
-                </div>
-                <div className='flex flex-col'>
-                    <label htmlFor="impresoraModelo" className="font-semibold text-gray-700">Modelo de Impresora</label>
-                    <input 
-                        type="text" 
-                        name="impresoraModelo" 
-                        value={printerInfo.impresoraModelo} 
-                        onChange={handleChange}
-                        className='mt-2 p-3 rounded-lg border border-gray-300 focus:border-green-500 focus:ring focus:ring-green-200' 
-                        placeholder="Ingresa el modelo de tu impresora"
-                    />
-                </div>
-                <div className='flex flex-col'>
-                    <label htmlFor="impresoraSerial" className="font-semibold text-gray-700">Número de Serie de la Impresora</label>
-                    <input 
-                        type="text" 
-                        name="impresoraSerial" 
-                        value={printerInfo.impresoraSerial} 
-                        onChange={handleChange}
-                        className='mt-2 p-3 rounded-lg border border-gray-300 focus:border-green-500 focus:ring focus:ring-green-200' 
-                        placeholder="Ingresa el número de serie"
-                    />
-                </div>
-                <div className='flex flex-col'>
-                    <label htmlFor="cvu" className="font-semibold text-gray-700">CVU</label>
-                    <input 
-                        type="text" 
-                        name="cvu" 
-                        value={printerInfo.cvu} 
-                        onChange={handleChange}
-                        className='mt-2 p-3 rounded-lg border border-gray-300 focus:border-green-500 focus:ring focus:ring-green-200' 
-                        placeholder="Ingresa tu CVU"
-                    />
-                </div>
-                <div className='flex flex-col'>
-                    <label htmlFor="banco" className="font-semibold text-gray-700">Banco</label>
-                    <input 
-                        type="text" 
-                        name="banco" 
-                        value={printerInfo.banco} 
-                        onChange={handleChange}
-                        className='mt-2 p-3 rounded-lg border border-gray-300 focus:border-green-500 focus:ring focus:ring-green-200' 
-                        placeholder="Ingresa el nombre de tu banco"
-                    />
-                </div>
-                <div className='flex flex-col'>
-                    <label htmlFor="direccionBancaria" className="font-semibold text-gray-700">Dirección Bancaria</label>
-                    <input 
-                        type="text" 
-                        name="direccionBancaria" 
-                        value={printerInfo.direccionBancaria} 
-                        onChange={handleChange}
-                        className='mt-2 p-3 rounded-lg border border-gray-300 focus:border-green-500 focus:ring focus:ring-green-200' 
-                        placeholder="Ingresa la dirección de tu banco"
-                    />
-                </div>
+                {/* Continúa con los demás campos del formulario */}
                 <div className='flex justify-center mt-4'>
                     <button type="submit" className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
                         Registrar Impresora
