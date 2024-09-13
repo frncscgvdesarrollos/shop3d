@@ -165,16 +165,50 @@ export async function deleteProduct(id){
   })
   
 }
-/*CRUD VENTAS */
-export async function getMayorId() {
-  const q = query(collection(db, "ventas"), orderBy("id", "desc"));
-  const querySnapshot = await getDocs(q);
-  if (!querySnapshot.empty) {
-      const lastDoc = querySnapshot.docs[0];
-      return lastDoc.data().id; // Retorna el mayor ID existente
-  }
-  return 0; // Si no hay documentos, retorna 0
+
+
+async function getMayorId() {
+  const ventasRef = collection(db, 'ventas');
+  const querySnapshot = await getDocs(ventasRef);
+
+  let maxId = 0;
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    const docId = data.id;
+    // Asegúrate de que el ID sea un número
+    if (typeof docId === 'number' && docId > maxId) {
+      maxId = docId;
+    }
+  });
+
+  return maxId;
 }
+
+// Función para obtener la impresora con menos pedidos
+
+// Función para obtener la impresora con menos pedidos
+async function getImpresoraConMenosPedidos() {
+  const impresorasRef = collection(db, 'impresoras');
+  const q = query(impresorasRef)
+  const querySnapshot = await getDocs(q);
+
+  let impresoraSeleccionada = null;
+  let menorCantidadPedidos = Infinity;
+
+  querySnapshot.forEach((doc) => {
+    const impresoraData = doc.data();
+    const cantidadPedidos = (impresoraData.pedido || []).length;
+
+    if (cantidadPedidos < menorCantidadPedidos) {
+      menorCantidadPedidos = cantidadPedidos;
+      impresoraSeleccionada = { id: doc.id, ...impresoraData }; // Guarda el ID del documento
+    }
+  });
+
+  return impresoraSeleccionada;
+}
+
+// Función para crear una venta
 export async function createVenta(venta) {
   try {
     const mayorId = await getMayorId();
@@ -184,33 +218,36 @@ export async function createVenta(venta) {
     const ventaConId = { ...venta, id: nuevoId };
 
     // Crear el registro de la venta en la colección "ventas"
-    const c = collection(db, "ventas");
-    const docRef = await addDoc(c, ventaConId);
+    const ventasRef = collection(db, 'ventas');
+    await addDoc(ventasRef, ventaConId);
 
-    // Referencia al documento de la impresora
-    const impresoraRef = doc(db, "impresoras", "impresora1");
+    // Obtener la impresora con menos pedidos
+    const impresora = await getImpresoraConMenosPedidos();
+    if (!impresora) {
+      throw new Error('No se encontraron impresoras');
+    }
+
+    const impresoraId = impresora.id; // Obtén el ID de la impresora seleccionada
+    console.log('ID de la impresora seleccionada para actualizar:', impresoraId);
+
+    // Referencia al documento de la impresora usando una consulta
+    const impresorasRef = collection(db, 'impresoras');
+    const impresoraQuery = query(impresorasRef, where('id', '==', impresoraId));
+    const impresoraQuerySnapshot = await getDocs(impresoraQuery);
+
+    if (impresoraQuerySnapshot.empty) {
+      throw new Error(`El documento de la impresora con ID ${impresoraId} no existe durante la transacción`);
+    }
+
+    const impresoraDoc = impresoraQuerySnapshot.docs[0]; // Obtén el primer documento que coincide
+    const impresoraData = impresoraDoc.data();
+    const pedidoActual = impresoraData.pedido || [];
+    const nuevasHorasRestantes = impresoraData.horasRestantes + venta.producto.tiempo;
+    const nuevoPedido = [...pedidoActual, ventaConId];
 
     // Ejecutar una transacción para asegurar la consistencia de los datos
     await runTransaction(db, async (transaction) => {
-      const impresoraDoc = await transaction.get(impresoraRef);
-
-      if (!impresoraDoc.exists()) {
-        throw new Error("El documento de la impresora no existe");
-      }
-
-      const impresoraData = impresoraDoc.data();
-
-      // Asegurarse de que "pedido" sea un array
-      const pedidoActual = impresoraData.pedido || [];
-
-      // Sumar el tiempo del producto a la propiedad horasRestantes
-      const nuevasHorasRestantes = impresoraData.horasRestantes + venta.producto.tiempo;
-
-      // Agregar el registro de la venta a la propiedad pedido (que es un array)
-      const nuevoPedido = [...pedidoActual, ventaConId];
-
-      // Actualizar el documento de la impresora
-      transaction.update(impresoraRef, {
+      transaction.update(impresoraDoc.ref, {
         horasRestantes: nuevasHorasRestantes,
         pedido: nuevoPedido,
       });
@@ -218,10 +255,12 @@ export async function createVenta(venta) {
 
     return nuevoId; // Retorna el nuevo ID
   } catch (error) {
-    console.error("Error creando la venta:", error);
+    console.error('Error creando la venta:', error);
     throw error;
   }
 }
+
+
 export async function updateStatusVenta(idVenta){
   const q = query(collection(db,'ventas') , where("id", "==", idVenta));
   const querySnapshot = await getDocs(q);
