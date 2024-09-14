@@ -1,6 +1,8 @@
-'use client'
+'use client';
 import { useState } from "react";
 import { createProduct } from "../firebase";
+import { uploadFileToStorage } from "../firebase"; // Importa la función de subida
+import { v4 as uuidv4 } from 'uuid'; // Paquete para generar UUIDs
 
 export default function CreateProductForm() {
     const [formData, setFormData] = useState({
@@ -11,29 +13,47 @@ export default function CreateProductForm() {
         imagen: "",
         tiempo: 0,
         masVendido: 0,
+        file: null // Agrega un estado para el archivo
     });
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+        const { name, value, type, files } = e.target;
+        if (type === 'file') {
+            setFormData({
+                ...formData,
+                file: files[0]
+            });
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value,
+            });
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Validación simple (puedes expandirla según tus necesidades)
-        if (!formData.nombre || !formData.precio || !formData.status) {
+        if (!formData.nombre || !formData.precio || !formData.status || !formData.file) {
             alert("Por favor, complete todos los campos obligatorios.");
             return;
         }
-        
+
         try {
-            // Llamada a la función asíncrona
-            const id = await createProduct(formData);
-            console.log("Producto creado con ID:", id);
+            // Crear producto sin archivo para obtener un ID
+            const productId = uuidv4(); // Genera un ID único para el producto
+            const productData = { ...formData, id: productId };
+            delete productData.file; // Elimina el archivo de formData para no guardarlo en Firestore
+
+            // Crea el producto en Firestore
+            await createProduct(productData);
+
+            // Sube el archivo a Firebase Storage
+            const { url, uniqueFileName } = await uploadFileToStorage(formData.file, productId);
+
+            // Actualiza el producto con la URL del archivo
+            await updateProductWithFileUrl(productId, url, uniqueFileName);
 
             // Limpiar formulario
             setFormData({
@@ -43,6 +63,8 @@ export default function CreateProductForm() {
                 status: "",
                 imagen: "",
                 tiempo: 0,
+                masVendido: 0,
+                file: null
             });
 
             // Mostrar mensaje de éxito
@@ -98,7 +120,7 @@ export default function CreateProductForm() {
                     />
                 </div>
                 <div className="mb-4">
-                    <label className="block text-gray-700">URL de la Imagen</label>
+                    <label className="block text-gray-700">Imagen</label>
                     <input
                         name="imagen"
                         value={formData.imagen}
@@ -113,6 +135,15 @@ export default function CreateProductForm() {
                         value={formData.tiempo}
                         onChange={handleChange}
                         className="w-full p-2 border border-gray-300 rounded-md"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700">Archivo de Impresión</label>
+                    <input
+                        type="file"
+                        onChange={handleChange}
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                        required
                     />
                 </div>
                 <button type="submit" className="w-full bg-blue-500 text-teal-600 p-2 rounded-md hover:bg-blue-600 transition">

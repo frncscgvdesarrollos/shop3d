@@ -63,7 +63,7 @@ export default function MisCompras() {
 
 
     return (
-        <div className="w-full lg:max-w-[90vw] min-h-[550vh] lg:min-h-[150vh] mx-auto p-4 flex flex-col gap-10 clientafondo">
+        <div className="w-full lg:max-w-[90vw] min-h-[550vh] lg:min-h-[150vh] mx-auto px-24 py-24 flex flex-col gap-10 clientafondo">
             <h1 className="text-3xl font-bold mb-6 text-center">Mis Compras</h1>
             <h2 className="text-xl font-semibold mb-6 text-left">Aqui puedes ver todo el proceso! </h2>
             {loading ? (

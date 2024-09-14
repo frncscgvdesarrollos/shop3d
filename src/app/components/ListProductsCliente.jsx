@@ -97,38 +97,40 @@ export default function ListProducts() {
   }
 
   function confirmarCompra() {
-      const producto = productoSeleccionado;
-      const venta = {
-          producto: {
-              id: producto.id,
-              nombre: producto.nombre,
-              descripcion: producto.descripcion,
-              precio: producto.precio,
-              imagen: producto.imagen,
-              tiempo: Number(producto.tiempo),
-          },
-          cliente: {
-              id: uid,
-              nombre: cliente.nombre || "Nombre No Disponible",
-              email: user?.email || "email@ejemplo.com",
-          },
-          printer: {},
-          pago: "pendiente",
-          status: "pedido",
-          totalSumado: false,
-          codigoEnvio: "",
-          fecha: new Date(),
-      };
-      createVenta(venta)
-          .then(() => {
-              window.location.href = '/shop/venta/success';
-          })
-          .catch(error => {
-              console.error("Error creando la venta:", error);
-          });
-      
-      setModalVisible(false);
-  }
+    const producto = productoSeleccionado;
+    const venta = {
+        producto: {
+            id: producto.id,
+            nombre: producto.nombre,
+            descripcion: producto.descripcion,
+            precio: producto.precio,
+            imagen: producto.imagen,
+            tiempo: Number(producto.tiempo),
+            archivoImpresion: producto.archivoImpresion, // Añadir la URL del archivo
+        },
+        cliente: {
+            id: uid,
+            nombre: cliente.nombre || "Nombre No Disponible",
+            email: user?.email || "email@ejemplo.com",
+        },
+        printer: {},
+        pago: "pendiente",
+        status: "pedido",
+        totalSumado: false,
+        codigoEnvio: "",
+        fecha: new Date(),
+    };
+
+    createVenta(venta)
+        .then(() => {
+            window.location.href = '/shop/venta/success';
+        })
+        .catch(error => {
+            console.error("Error creando la venta:", error);
+        });
+    
+    setModalVisible(false);
+}
 
   return (
       <div className="imagenfondo2 lg:w-[80vw] lg:mx-auto min-h-screen flex flex-col md:flex-row items-start justify-center bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600">

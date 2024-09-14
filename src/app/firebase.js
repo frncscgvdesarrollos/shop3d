@@ -1,7 +1,11 @@
 import { initializeApp } from "firebase/app";
 import { getAuth  } from "firebase/auth";
 import { getFirestore , collection, addDoc , getDocs, getDoc ,setDoc,  deleteDoc ,query, where, doc , updateDoc, arrayUnion , orderBy, limit ,writeBatch ,arrayRemove, runTransaction, increment } from "firebase/firestore";
-import { getStorage , ref,  uploadBytes, getDownloadURL, getBytes  } from "firebase/storage";
+import { getStorage,  uploadBytes,  ref, getDownloadURL   } from "firebase/storage";
+
+import { v4 as uuidv4 } from 'uuid';
+
+
 
 
 const firebaseConfig = {
@@ -120,26 +124,63 @@ export async function getProductos(){
   });
   return productos;
 }
-export async function createProduct(producto) {
-  const ref = collection(db, 'products');
-  
-  // Consulta para obtener el documento con el mayor valor en la propiedad 'id'
-  const q = query(ref, orderBy('id', 'desc'), limit(1));
-  const querySnapshot = await getDocs(q);
-  
-  let maxId = 0;
-  
-  // Si existe al menos un documento, obtiene el valor de la propiedad 'id'
-  querySnapshot.forEach((doc) => {
-    maxId = doc.data().id;
-  });
-  
-  // Incrementa el mayor ID en 1 y lo asigna al nuevo producto
-  producto.id = maxId + 1;
-  
-  // Agrega el nuevo producto a la colección
-  const docRef = await addDoc(ref, producto);
-  return docRef.id;
+export const getFileDownloadURL = async (filePath) => {
+  try {
+      if (!filePath) throw new Error("No file path provided");
+
+      const fileRef = ref(storage, filePath);
+      const url = await getDownloadURL(fileRef);
+      return url;
+  } catch (error) {
+      console.error("Error al obtener la URL del archivo:", error);
+      throw new Error("Error al obtener la URL del archivo.");
+  }
+};
+
+
+export const uploadFileToStorage = async (file) => {
+  if (!file) throw new Error("No file provided");
+
+  const fileRef = ref(storage, `archivos/${file.archivoImpresion}`);
+  await uploadBytes(fileRef, file);
+  const url = await getDownloadURL(fileRef);
+
+  return url;
+};
+
+export async function createProduct(producto, file) {
+  try {
+    // Verifica que el archivo esté definido
+    if (!file) {
+      throw new Error("No se ha proporcionado ningún archivo.");
+    }
+
+    // Sube el archivo y obtén la URL
+    const fileURL = await uploadFileToStorage(file);
+
+    // Consulta para obtener el documento con el mayor valor en la propiedad 'id'
+    const ref = collection(db, 'products');
+    const q = query(ref, orderBy('id', 'desc'), limit(1));
+    const querySnapshot = await getDocs(q);
+
+    let maxId = 0;
+
+    // Obtén el mayor ID existente
+    querySnapshot.forEach((doc) => {
+      maxId = doc.data().id;
+    });
+
+    // Asigna un nuevo ID y la URL del archivo al producto
+    producto.id = maxId + 1;
+    producto.fileURL = fileURL;
+
+    // Agrega el nuevo producto a la colección
+    const docRef = await addDoc(ref, producto);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error al crear el producto:", error);
+    throw new Error("Error al crear el producto.");
+  }
 }
 export function updateProduct(id, updatedData) {
   const q = query(collection(db, 'products'), where("id", "==", id));

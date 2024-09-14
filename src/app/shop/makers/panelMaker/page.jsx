@@ -1,6 +1,6 @@
 'use client'
 import { UserAuth } from "@/app/context/AuthContext";
-import { getImpresoraByUid, iniciarProduccion, finalizarPedido, updateCodigoEnvio, updateStatusVenta , deleteLastImpresion } from "@/app/firebase"; 
+import { getImpresoraByUid, iniciarProduccion, finalizarPedido, updateCodigoEnvio, updateStatusVenta, deleteLastImpresion, uploadFileToStorage , getFileDownloadURL } from "@/app/firebase";
 import { useEffect, useState } from "react";
 
 export default function PanelMaker() {
@@ -37,6 +37,25 @@ export default function PanelMaker() {
             setCodigoEnvio(''); // Reiniciar el código de envío al cambiar de impresora
         }
     }, [selectedPrinter]);
+    const handleDownloadFile = async () => {
+        const filePath = 'archivos/mobile phone desktop stand.zip'; // Ruta en Firebase Storage
+        
+        try {
+            // Obtén la URL de descarga del archivo
+            const url = await getFileDownloadURL(filePath);
+            
+            // Crear un elemento <a> temporal para descargar el archivo
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'mobile phone desktop stand.zip'; // Nombre del archivo a descargar
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error("Error al descargar el archivo:", error);
+            // Manejar el error aquí
+        }
+    };
     
     // Función para manejar la selección de impresora
     const handleSelectPrinter = (printer) => {
@@ -150,13 +169,13 @@ const handleConfirmShipment = async (orderId) => {
                 {printers.length > 0 ? (
                     <ul className="space-y-2">
                         {printers.map((printer, index) => (
-                            <li
-                                key={index}
-                                className={`p-2 cursor-pointer rounded transition-colors duration-200 ${selectedPrinter?.id === printer.id ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-                                onClick={() => handleSelectPrinter(printer)}
-                            >
-                                Impresora {printer.id || "Sin ID"}
-                            </li>
+      <li
+      key={index}
+      className={`p-2 cursor-pointer rounded transition-colors duration-200 ${selectedPrinter?.id === printer.id ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+      onClick={() => handleSelectPrinter(printer)}
+    >
+      Impresora {printer.id || "Sin ID"}
+    </li>
                         ))}
                         <a href="/shop/makers/registerPrinter" className="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors">
                             Agregar Impresora
@@ -188,16 +207,26 @@ const handleConfirmShipment = async (orderId) => {
     
                             {/* Detalles de la impresión actual */}
                             <div className="flex-1">
-                                {selectedPrinter.currentImpresion && selectedPrinter.currentImpresion.producto ? (
-                                    <div className="bg-gray-100 p-4 rounded shadow-md">
-                                        <h3 className="text-xl font-semibold mb-2">Detalles de la Actual Impresión</h3>
-                                        <p><strong>Descripción del Producto:</strong> {selectedPrinter.currentImpresion.producto.descripcion}</p>
-                                        <p><strong>Nombre del Producto:</strong> {selectedPrinter.currentImpresion.producto.nombre}</p>
-                                        <p><strong>Precio del Producto:</strong> ${selectedPrinter.currentImpresion.producto.precio}</p>
-                                        <p><strong>Tiempo de Producción:</strong> {selectedPrinter.currentImpresion.producto.tiempo} horas</p>
-                                        <p><strong>Status del Pedido:</strong> {selectedPrinter.currentImpresion.producto.status}</p>
-                                        <img src={selectedPrinter.currentImpresion.producto.imagen} alt="pedido actual" className="mt-2 rounded" width={200} height={200} />
-                                    </div>
+                            {selectedPrinter.currentImpresion && selectedPrinter.currentImpresion.producto ? (
+                                <div className="bg-gray-100 p-4 rounded shadow-md">
+                                    <h3 className="text-xl font-semibold mb-2">Detalles de la Actual Impresión</h3>
+                                    <p><strong>Descripción del Producto:</strong> {selectedPrinter.currentImpresion.producto.descripcion}</p>
+                                    <p><strong>Nombre del Producto:</strong> {selectedPrinter.currentImpresion.producto.nombre}</p>
+                                    <p><strong>Precio del Producto:</strong> ${selectedPrinter.currentImpresion.producto.precio}</p>
+                                    <p><strong>Tiempo de Producción:</strong> {selectedPrinter.currentImpresion.producto.tiempo} horas</p>
+                                    <p><strong>Status del Pedido:</strong> {selectedPrinter.currentImpresion.producto.status}</p>
+                                    <img src={selectedPrinter.currentImpresion.producto.imagen} alt="pedido actual" className="mt-2 rounded" width={200} height={200} />
+                                    
+                                    {/* Botón de descarga */}
+                                    {selectedPrinter.currentImpresion.producto.archivoImpresion && (
+                                        <button
+                                            onClick={handleDownloadFile}
+                                            className="mt-4 bg-green-500 text-white p-2 rounded hover:bg-green-600 transition-colors"
+                                        >
+                                            Descargar Archivo de Impresión
+                                        </button>
+                                    )}
+                                </div>
                                 ) : (
                                     <p className="text-gray-600 mt-4">No hay impresión actual.</p>
                                 )}
