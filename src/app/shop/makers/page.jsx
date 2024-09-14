@@ -3,7 +3,7 @@ export default function QuieroSerUnMaker() {
   
   
   function handleRegister(){
-   return window.localStorage.href="/shop/makers/registerPrinter";
+   window.localStorage.href="/shop/makers/registerPrinter";
   }
     return (
       <div className="p-8 bg-gray-50 text-gray-900 pt-20 lg:pt-8 makerfondo">
