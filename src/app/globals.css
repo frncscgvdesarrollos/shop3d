@@ -20,6 +20,12 @@
   background-repeat: no-repeat; /* Evita que la imagen se repita */
   background-size: 500px 500px; /* Ajusta el tamaño de la imagen al contenedor sin recortar */
 }
+.clientafondo{
+  background-image: url(../../public/clienta.png) !important;
+  background-repeat: no-repeat;
+  background-size: 700px ;
+  background-position: right bottom;
+}
 
 @media (max-width:1400px){
   .imagenfondo {

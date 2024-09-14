@@ -73,7 +73,7 @@ export default function ListProducts() {
                 Lista de Productos 
                 {/* 📦 */}
             </h5>
-            <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-1 mt-4">
+            <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-5 mt-4">
                 {productosParaMostrar.map(producto => (
                     <li key={producto.id} className="bg-gradient-to-br from-gray-200 via-teal-200 to-gray-100 border border-teal-300 rounded-lg shadow-lg p-6 flex flex-col justify-between overflow-y-visible">
                         <h6 className="text-2xl font-bold text-teal-600 mb-2">{producto.nombre}</h6>
@@ -82,12 +82,12 @@ export default function ListProducts() {
                         <span className="text-xl font-semibold text-lime-600">Precio ${producto.precio}</span>
                         <span>Estado: {producto.status}</span>
                         <span>Identificador: {producto.id}</span>
-                        <button 
+                        {/* <button 
                             className="bg-teal-500 hover:bg-teal-600 text-lime-300 font-semibold py-2 px-4 rounded"
                             onClick={() => handleComprar(producto)}
                         >
                             Comprar
-                        </button>
+                        </button> */}
                         {mercadoPago ?
                             <ProductosMP producto={producto} />
                             : null}

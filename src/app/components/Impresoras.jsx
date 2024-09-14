@@ -163,7 +163,7 @@ export default function ImpresorasPanel() {
 
                                 </div>
                             </div>
-                            <div className="flex lg:flex-col justify-end items-end lg:gap-10 mt-6 p-2">
+                            {/* <div className="flex lg:flex-col justify-end items-end lg:gap-10 mt-6 p-2">
                                 {impresora.currentImpresion && Object.keys(impresora.currentImpresion).length > 0 ? (
                                     <button
                                         onClick={() => handleFinalizarPedido(impresora.id)}
@@ -179,7 +179,7 @@ export default function ImpresorasPanel() {
                                         Imprimir
                                     </button>
                                 )}
-                            </div>
+                            </div> */}
                         </li>
                     ))}
                 </ul>

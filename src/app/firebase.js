@@ -22,6 +22,9 @@ export const storage = getStorage(app)
 
 
 export default app;
+// Define la secuencia de estados
+
+
 
 export async function agregarComentario(texto, nombre, userId, ventaId) {
   if (!texto || texto.trim() === '') {
@@ -261,16 +264,76 @@ export async function createVenta(venta) {
 }
 
 
-export async function updateStatusVenta(idVenta){
-  const q = query(collection(db,'ventas') , where("id", "==", idVenta));
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    updateDoc(doc.ref, {
-      status: "pagoConMp"
-    })
-  })
-  return true;
+export async function updateStatusVenta(idVenta) {
+  try {
+    // Construir la consulta
+    const q = query(collection(db, 'ventas'), where("id", "==", idVenta));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const doc = querySnapshot.docs[0];
+      const ventaData = doc.data();
+      const currentStatus = ventaData.status;
+
+      // Define el siguiente estado basado en el estado actual usando switch
+      let nextStatus;
+      switch (currentStatus) {
+        case "pedido":
+          nextStatus = "imprimiendo";
+          break;
+        case "imprimiendo":
+          nextStatus = "listo para enviar";
+          break;
+        case "listo para enviar":
+          nextStatus = "enviado";
+          break;
+        case "enviado":
+          nextStatus = "recibido";
+          break;
+        case "recibido":
+          console.error("El estado actual ya es el final, no se puede actualizar.");
+          return false;
+        default:
+          console.error("Estado actual no reconocido.");
+          return false;
+      }
+
+      // Actualizar el estado del pedido
+      await updateDoc(doc.ref, { status: nextStatus });
+      console.log(`Estado del pedido ${idVenta} actualizado a '${nextStatus}'`);
+      return true;
+    } else {
+      console.error("No se encontró ninguna venta con el ID proporcionado.");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error al actualizar el estado del pedido:", error);
+    return false;
+  }
 }
+export async function updateCodigoEnvio(idVenta, nuevoCodigoEnvio) {
+  try {
+    // Construir la consulta
+    const q = query(collection(db, 'ventas'), where("id", "==", idVenta));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const doc = querySnapshot.docs[0];
+
+      // Actualizar el codigoEnvio del pedido
+      await updateDoc(doc.ref, { codigoEnvio: nuevoCodigoEnvio });
+      console.log(`Código de envío de la venta ${idVenta} actualizado a '${nuevoCodigoEnvio}'`);
+      return true;
+    } else {
+      console.error("No se encontró ninguna venta con el ID proporcionado.");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error al actualizar el código de envío:", error);
+    return false;
+  }
+}
+
 export async function cancelarVenta(idVenta){
   const q = query(collection(db,'ventas') , where("id", "==", idVenta));
   const querySnapshot = await getDocs(q);
@@ -483,6 +546,30 @@ export async function updateImpresora(impresoraId, updatedData) {
   await updateDoc(impresoraRef, updatedData);
   return impresoraId; // Devuelve el ID de la impresora actualizada
 }
+export async function deleteLastImpresion(impresoraId) {
+  try {
+    // Construir la consulta
+    const q = query(collection(db, 'impresoras'), where("id", "==", impresoraId));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      // Obtener el primer documento que coincide con la consulta
+      const docSnapshot = querySnapshot.docs[0];
+      const docRef = doc(db, 'impresoras', docSnapshot.id);
+
+      // Actualizar el campo de la última impresión a null
+      await updateDoc(docRef, { lastImpresion: {} });
+      console.log(`Última impresión eliminada para la impresora ID: ${impresoraId}`);
+      return impresoraId; // Devuelve el ID de la impresora actualizada
+    } else {
+      console.error("No se encontró ninguna impresora con el ID proporcionado.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error al eliminar la última impresión:", error);
+    return null;
+  }
+}
 /* Eliminar una impresora */
 export async function deleteImpresora(impresoraId) {
   const impresoraRef = doc(db, 'impresoras', impresoraId);
@@ -573,54 +660,67 @@ export async function agregarPedido(impresoraId, pedido) {
   }
 }
 
+// Función para iniciar la producción
+
+// Función para iniciar la producción
 export async function iniciarProduccion(impresoraId) {
-  // Construir la consulta
-  const q = query(collection(db, 'impresoras'), where("id", "==", impresoraId));
-  
-  // Obtener los documentos que coinciden con la consulta
-  const querySnapshot = await getDocs(q);
+  try {
+    // Construir la consulta para obtener la impresora
+    const q = query(collection(db, 'impresoras'), where("id", "==", impresoraId));
+    const querySnapshot = await getDocs(q);
 
-  // Asegurarse de que la consulta devuelve al menos un documento
-  if (!querySnapshot.empty) {
-    const doc = querySnapshot.docs[0]; // Tomar el primer documento si hay más de uno
-    const impresoraData = doc.data();
+    if (!querySnapshot.empty) {
+      // Tomar el primer documento si hay más de uno
+      const impresoraDoc = querySnapshot.docs[0];
+      const impresoraData = impresoraDoc.data();
 
-    // Verifica si `pedido` es un array y tiene elementos
-    if (Array.isArray(impresoraData.pedido) && impresoraData.pedido.length > 0) {
-      // Tomar el primer pedido en la lista
-      const currentPedido = impresoraData.pedido[0];
+      if (Array.isArray(impresoraData.pedido) && impresoraData.pedido.length > 0) {
+        // Tomar el primer pedido en la lista
+        const currentPedido = impresoraData.pedido[0];
+        const newPedidos = impresoraData.pedido.slice(1);
+        const tiempoProduccion = currentPedido.producto.tiempo;
+        const nuevasHorasRestantes = Math.max(impresoraData.horasRestantes - tiempoProduccion, 0);
 
-      // Quitar el pedido de la lista de pedidos
-      const newPedidos = impresoraData.pedido.slice(1);
+        // Actualizar la impresora con el pedido actual en producción y las horas restantes
+        await updateDoc(impresoraDoc.ref, {
+          currentImpresion: currentPedido,
+          pedido: newPedidos,
+          horasRestantes: nuevasHorasRestantes,
+        });
 
-      // Restar las horas del producto en producción de las horas restantes de la impresora
-      const tiempoProduccion = currentPedido.producto.tiempo; // Asumiendo que 'tiempo' está dentro del objeto 'producto' en el pedido
-      const nuevasHorasRestantes = impresoraData.horasRestantes - tiempoProduccion;
+        // Crear una consulta para encontrar el documento de la venta con el ID del pedido
+        const ventaQuery = query(collection(db, 'ventas'), where("id", "==", currentPedido.id));
+        const ventaSnapshot = await getDocs(ventaQuery);
 
-      // Asegurarse de que las horas restantes no sean negativas
-      const horasRestantesFinal = nuevasHorasRestantes >= 0 ? nuevasHorasRestantes : 0;
+        if (!ventaSnapshot.empty) {
+          // Tomar el primer documento si hay más de uno
+          const ventaDoc = ventaSnapshot.docs[0];
+          // Actualizar el estado del pedido en la colección 'ventas'
+          await updateDoc(ventaDoc.ref, { status: 'imprimiendo' });
 
-      // Actualizar la impresora con el pedido actual en producción y las horas restantes
-      await updateDoc(doc.ref, {
-        currentImpresion: currentPedido, // Guardar el objeto completo del pedido
-        pedido: newPedidos,
-        horasRestantes: horasRestantesFinal, // Actualizar las horas restantes
-      });
-
-      return {
-        currentImpresion: currentPedido,
-        pedido: newPedidos,
-        horasRestantes: horasRestantesFinal,
-      };
+          return {
+            currentImpresion: currentPedido,
+            pedido: newPedidos,
+            horasRestantes: nuevasHorasRestantes,
+          };
+        } else {
+          console.error("No se encontró ninguna venta con el ID proporcionado.");
+          return null;
+        }
+      } else {
+        console.error("El array 'pedido' está vacío o no es un array.");
+        return null;
+      }
     } else {
-      console.error("El array 'pedido' está vacío o no es un array.");
-      return null; // Si no hay pedidos o datos, retornar null
+      console.error("No se encontró ninguna impresora con el ID proporcionado.");
+      return null;
     }
-  } else {
-    console.error("No se encontró ninguna impresora con el ID proporcionado.");
-    return null; // Si no se encuentra el documento, retornar null
+  } catch (error) {
+    console.error("Error al iniciar la producción:", error);
+    return null;
   }
 }
+
 export async function actualizarTotalHorasImpresas(tiempoImpresion) {
   try {
     // Referencia al documento específico de datosClientes
@@ -650,76 +750,99 @@ export async function actualizarTotalHorasImpresas(tiempoImpresion) {
   }
 }
 
+
+// Función para finalizar un pedido
 export async function finalizarPedido(impresoraId) {
   try {
-    // Crear una consulta para encontrar el documento de la impresora con el ID especificado
     const q = query(collection(db, 'impresoras'), where('id', '==', impresoraId));
-    
-    // Obtener los documentos que coinciden con la consulta
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
-      // Tomar el primer documento que coincide (asumimos que solo hay uno)
       const impresoraDoc = querySnapshot.docs[0];
       const impresoraData = impresoraDoc.data();
 
       if (impresoraData && impresoraData.currentImpresion) {
-        const { currentImpresion, horasImprimidas = 0, pedidosTotales = 0 } = impresoraData; // Aseguramos valores predeterminados
-        const tiempoImpresion = currentImpresion.producto.tiempo || 0; // Aseguramos un valor predeterminado
+        const { currentImpresion, horasImprimidas = 0, pedidosTotales = 0 } = impresoraData;
+        const tiempoImpresion = currentImpresion.producto.tiempo || 0;
 
-        // Actualizamos las horas imprimidas sumando el tiempo del pedido actual
         const newHorasImprimidas = horasImprimidas + tiempoImpresion;
-
-        // Incrementamos el contador de pedidos totales
         const newPedidosTotales = pedidosTotales + 1;
-
-        // Guardar la impresión actual en `lastImpresion` antes de limpiarla
         const lastImpresion = currentImpresion;
 
-        // Limpiar la propiedad `currentImpresion` ya que el pedido ha finalizado
         await updateDoc(impresoraDoc.ref, {
-          currentImpresion: {},
-          lastImpresion: lastImpresion, // Guardar la impresión anterior
-          horasImprimidas: newHorasImprimidas,
-          pedidosTotales: newPedidosTotales, // Actualizamos el total de pedidos
-        });
-
-        // Actualizar el estatus de la venta a "listo para enviar"
-        const ventaId = currentImpresion.id; // Asumimos que el ID de la venta está en `currentImpresion`
-        const ventaQuery = query(collection(db, 'ventas'), where('id', '==', ventaId));
-        const ventaSnapshot = await getDocs(ventaQuery);
-
-        if (!ventaSnapshot.empty) {
-          const ventaRef = ventaSnapshot.docs[0].ref;
-          await updateDoc(ventaRef, {
-            status: 'listo para enviar',
-          });
-        } else {
-          console.error("No se encontró ninguna venta con el ID proporcionado.");
-        }
-
-        // Actualizar totalHorasImpresas en datosCliente
-        await actualizarTotalHorasImpresas(tiempoImpresion);
-
-        return {
           currentImpresion: {},
           lastImpresion: lastImpresion,
           horasImprimidas: newHorasImprimidas,
           pedidosTotales: newPedidosTotales,
-        };
+        });
+
+        const ventaId = currentImpresion.id;
+        const ventaQuery = query(collection(db, 'ventas'), where('id', '==', ventaId));
+        const ventaSnapshot = await getDocs(ventaQuery);
+
+        if (!ventaSnapshot.empty) {
+          const ventaDoc = ventaSnapshot.docs[0];
+          const ventaData = ventaDoc.data();
+
+          const currentStatus = ventaData.status;
+
+          let nextStatus;
+          switch (currentStatus) {
+            case "pedido":
+              nextStatus = "imprimiendo";
+              break;
+            case "imprimiendo":
+              nextStatus = "listo para enviar";
+              break;
+            case "listo para enviar":
+              nextStatus = "enviado";
+              break;
+            case "enviado":
+              nextStatus = "recibido";
+              break;
+            case "recibido":
+              console.warn("El pedido ya está en el estado final.");
+              break;
+            default:
+              console.error("Estado actual no reconocido.");
+              return null;
+          }
+
+          if (nextStatus) {
+            await updateDoc(ventaDoc.ref, { status: nextStatus });
+          }
+
+          // Aquí deberías implementar la función `actualizarTotalHorasImpresas` si es necesario
+          // await actualizarTotalHorasImpresas(tiempoImpresion);
+
+          return {
+            currentImpresion: {},
+            lastImpresion: lastImpresion,
+            horasImprimidas: newHorasImprimidas,
+            pedidosTotales: newPedidosTotales,
+          };
+        } else {
+          console.error("No se encontró ninguna venta con el ID proporcionado.");
+        }
+
+        return null;
       } else {
         console.warn('No hay una impresión actual en esta impresora.');
+        return null;
       }
     } else {
       console.error('No se encontró ninguna impresora con el ID proporcionado.');
+      return null;
     }
-
-    return null; // Si no se encuentra la impresora o no hay impresión actual, retornar null
   } catch (error) {
     console.error('Error al finalizar el pedido:', error);
     return null;
   }
 }
+
+
+
+
 
 export async function confirmacionEnvio(codigoEnvio, ventaId) {
   const q = query(collection(db, "ventas"), where("status", "==", "listo para enviar"));
@@ -737,6 +860,60 @@ export async function confirmacionEnvio(codigoEnvio, ventaId) {
   });
 
   return null;
+}
+export async function marcarRecibido(idVenta) {
+  try {
+      const q = query(collection(db, 'ventas'), where("id", "==", idVenta));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+          const doc = querySnapshot.docs[0];
+          const ventaData = doc.data();
+          const currentStatus = ventaData.status;
+
+          if (currentStatus === "enviado") {
+              await updateDoc(doc.ref, { status: "recibido" });
+              console.log(`Estado del pedido ${idVenta} actualizado a 'recibido'`);
+              return true;
+          } else {
+              console.error("El estado actual no permite ser actualizado a 'recibido'.");
+              return false;
+          }
+      } else {
+          console.error("No se encontró ninguna venta con el ID proporcionado.");
+          return false;
+      }
+  } catch (error) {
+      console.error("Error al actualizar el estado del pedido:", error);
+      return false;
+  }
+}
+export async function finalizarCompra(idVenta) {
+  try {
+    const q = query(collection(db, 'ventas'), where("id", "==", idVenta));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const doc = querySnapshot.docs[0];
+      const ventaData = doc.data();
+      const currentStatus = ventaData.status;
+
+      if (currentStatus === "recibido") {
+        await updateDoc(doc.ref, { status: "finalizada" });
+        console.log(`Compra ${idVenta} finalizada con éxito`);
+        return true;
+      } else {
+        console.error("El estado actual no permite finalizar la compra.");
+        return false;
+      }
+    } else {
+      console.error("No se encontró ninguna venta con el ID proporcionado.");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error al finalizar la compra:", error);
+    return false;
+  }
 }
 
 export async function getImpresoraByUid(uid) {
@@ -774,4 +951,30 @@ export async function getDatosCliente() {
     console.error("Error al obtener los datos del cliente:", error);
     return null;
   }
+}
+
+
+
+
+
+
+
+
+
+
+/*------------------------------------------------------------------------------*/
+export async function MisCompras(uid) {
+  // Crea la consulta usando 'where' para filtrar por el ID del cliente
+  const q = query(collection(db, "ventas"), where("cliente.id", "==", uid));
+
+  // Ejecuta la consulta y espera los documentos
+  const querySnapshot = await getDocs(q);
+
+  // Mapea los documentos obtenidos a un array
+  const compras = querySnapshot.docs.map(doc => ({
+    id: doc.id, 
+    ...doc.data()
+  }));
+
+  return compras;
 }
